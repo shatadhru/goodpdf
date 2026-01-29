@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF প্রসেসর | Premium</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Anek Bangla Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Anek Bangla', sans-serif;
+        }
+
+        .tab-button.active {
+            @apply bg-indigo-600 text-white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-area:hover,
+        .file-upload-area.dragover {
+            border-color: #4F46E5;
+            background-color: #f8faff;
+        }
+
+        .file-upload-icon {
+            color: #9CA3AF;
+            transition: color 0.3s ease;
+        }
+
+        .file-upload-area:hover .file-upload-icon {
+            color: #4F46E5;
+        }
+
+        .file-item {
+            @apply bg-gray-50 border border-gray-200 rounded-lg p-3 mb-2;
+        }
+
+        .file-item:last-child {
+            @apply mb-0;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #4F46E5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-alert {
+            @apply bg-green-50 border border-green-200 rounded-xl p-4;
+        }
+
+        .error-alert {
+            @apply bg-red-50 border border-red-200 rounded-xl p-4;
+        }
+
+        .download-btn {
+            @apply bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg inline-block transition duration-200 mt-2;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-lg w-full max-w-md overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-center">
+            <h1 class="text-2xl font-bold text-white">PDF প্রসেসর | Premium</h1>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex justify-around bg-gray-100 p-2">
+            <button class="tab-button px-3 py-2 rounded-lg font-semibold active" data-tab="process">PDF প্রসেস</button>
+            <button class="tab-button px-3 py-2 rounded-lg font-semibold" data-tab="mergePDFs">PDF মার্জ</button>
+        </div>
+
+        <div class="p-6">
+            <!-- Tab 1: PDF Process -->
+            <div id="process" class="tab-content active">
+                <form id="pdfForm" class="flex flex-col space-y-5">
+                    <div class="file-upload-area rounded-xl p-6 text-center cursor-pointer" id="pdfUploadArea">
+                        <input type="file" name="pdf" id="pdfInput" accept="application/pdf" class="hidden">
+                        <div class="file-upload-icon mb-3">
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                </path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-700 font-medium mb-1">PDF ফাইল নির্বাচন করুন</p>
+                        <p class="text-gray-500 text-sm">বা ফাইলটি এখানে ড্রপ করুন</p>
+                        <p class="text-gray-400 text-xs mt-2">সর্বোচ্চ সাইজ: 50MB</p>
+                    </div>
+
+                    <!-- Processing Mode Selection -->
+                    <div class="space-y-3">
+                        <label class="text-gray-700 font-medium">প্রসেসিং মোড নির্বাচন করুন:</label>
+                        <select name="mode" id="processingMode"
+                            class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="negative">নেগেটিভ মোড</option>
+                            <option value="grayscale">গ্রেস্কেল মোড</option>
+                            <option value="sepia">সেপিয়া মোড</option>
+                            <option value="normal">নরমাল মোড</option>
+                        </select>
+                    </div>
+
+                    <div id="pdfFileInfo" class="hidden bg-green-50 border border-green-200 rounded-lg p-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                <span id="pdfFileName" class="text-green-700 font-medium text-sm"></span>
+                            </div>
+                            <button type="button" id="removePdfFile" class="text-red-500 hover:text-red-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        id="processSubmitBtn">
+                        আপলোড & প্রসেস করুন
+                    </button>
+                </form>
+                <div id="pdfResult" class="mt-6 text-center"></div>
+            </div>
+
+            <!-- Tab 2: Merge PDFs -->
+            <div id="mergePDFs" class="tab-content">
+                <form id="mergePDFForm" class="flex flex-col space-y-5">
+                    <div class="file-upload-area rounded-xl p-6 text-center cursor-pointer" id="mergePdfUploadArea">
+                        <input type="file" name="pdfs" id="pdfFiles" multiple accept="application/pdf" class="hidden">
+                        <div class="file-upload-icon mb-3">
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-700 font-medium mb-1">একাধিক PDF ফাইল নির্বাচন করুন</p>
+                        <p class="text-gray-500 text-sm">বা ফাইলগুলি এখানে ড্রপ করুন</p>
+                        <p class="text-gray-400 text-xs mt-2">সর্বোচ্চ ২০টি PDF, প্রতিটি 50MB</p>
+                    </div>
+
+                    <div id="pdfFilesList" class="space-y-2 max-h-40 overflow-y-auto"></div>
+
+                    <button type="submit"
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        id="mergeSubmitBtn" disabled>
+                        PDF মার্জ করুন
+                    </button>
+                </form>
+                <div id="mergePDFResult" class="mt-6 text-center"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
+            <p class="text-gray-600 text-sm">Made by Shatadhru | Premium Version</p>
+        </div>
+    </div>
+
+    <script>
+        // ===== Tabs Logic =====
+        const tabButtons = document.querySelectorAll(".tab-button");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                tabButtons.forEach(b => b.classList.remove("active"));
+                tabContents.forEach(c => c.classList.remove("active"));
+                btn.classList.add("active");
+                document.getElementById(btn.dataset.tab).classList.add("active");
+
+                // Clear results when switching tabs
+                clearAllResults();
+            });
+        });
+
+        // ===== Utility Functions =====
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showLoading(element) {
+            element.innerHTML = `
+                <div class="flex flex-col items-center justify-center p-6">
+                    <div class="loading-spinner mb-3"></div>
+                    <p class="text-gray-700 font-medium">প্রসেস হচ্ছে...</p>
+                    <p class="text-gray-500 text-sm mt-1">অনুগ্রহ করে অপেক্ষা করুন</p>
+                </div>
+            `;
+        }
+
+        function showSuccess(element, message, downloadUrl, fileName) {
+            element.innerHTML = `
+                <div class="success-alert">
+                    <div class="flex items-center mb-2">
+                        <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <h3 class="text-green-700 font-bold">${message}</h3>
+                    </div>
+                    <a href="${downloadUrl}" download="${fileName}" class="download-btn bg-gray-100 px-10 py-2 rounded-2xl">
+                        ডাউনলোড করুন
+                    </a>
+                </div>
+            `;
+        }
+
+        function showError(element, message) {
+            element.innerHTML = `
+                <div class="error-alert">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        <h3 class="text-red-700 font-bold">${message}</h3>
+                    </div>
+                </div>
+            `;
+        }
+
+        function clearAllResults() {
+            document.getElementById('pdfResult').innerHTML = '';
+            document.getElementById('mergePDFResult').innerHTML = '';
+        }
+
+        // ===== PDF Process Tab =====
+        const pdfInput = document.getElementById('pdfInput');
+        const pdfUploadArea = document.getElementById('pdfUploadArea');
+        const pdfFileInfo = document.getElementById('pdfFileInfo');
+        const pdfFileName = document.getElementById('pdfFileName');
+        const removePdfFile = document.getElementById('removePdfFile');
+        const pdfForm = document.getElementById('pdfForm');
+        const pdfResult = document.getElementById('pdfResult');
+        const processSubmitBtn = document.getElementById('processSubmitBtn');
+        const processingMode = document.getElementById('processingMode');
+
+        // PDF upload area interactions
+        pdfUploadArea.addEventListener('click', () => pdfInput.click());
+
+        pdfInput.addEventListener('change', function () {
+            if (this.files[0]) handlePdfFile(this.files[0]);
+        });
+
+        // Drag and drop functionality
+        pdfUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            pdfUploadArea.classList.add('dragover');
+        });
+
+        pdfUploadArea.addEventListener('dragleave', () => {
+            pdfUploadArea.classList.remove('dragover');
+        });
+
+        pdfUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            pdfUploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files[0]) {
+                pdfInput.files = e.dataTransfer.files;
+                handlePdfFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        removePdfFile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            pdfInput.value = '';
+            pdfFileInfo.classList.add('hidden');
+            processSubmitBtn.disabled = true;
+        });
+
+        function handlePdfFile(file) {
+            if (file.type !== 'application/pdf') {
+                showError(pdfResult, 'শুধুমাত্র PDF ফাইল নির্বাচন করুন');
+                return;
+            }
+
+            if (file.size > 50 * 1024 * 1024) {
+                showError(pdfResult, 'ফাইল সাইজ 50MB এর বেশি হতে পারবে না');
+                return;
+            }
+
+            pdfFileName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+            pdfFileInfo.classList.remove('hidden');
+            processSubmitBtn.disabled = false;
+        }
+
+        pdfForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!pdfInput.files[0]) {
+                showError(pdfResult, 'PDF ফাইল নির্বাচন করুন');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('pdf', pdfInput.files[0]);
+            formData.append('mode', processingMode.value);
+
+            showLoading(pdfResult);
+            processSubmitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/process-pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.details || 'প্রসেস ব্যর্থ হয়েছে');
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const modeName = processingMode.options[processingMode.selectedIndex].text;
+
+                showSuccess(
+                    pdfResult,
+                    `সফলভাবে ${modeName} এ প্রসেস হয়েছে!`,
+                    url,
+                    `processed_${processingMode.value}.pdf`
+                );
+
+            } catch (error) {
+                console.error('PDF Processing Error:', error);
+                showError(pdfResult, error.message || 'PDF প্রসেস করতে সমস্যা হয়েছে');
+            } finally {
+                processSubmitBtn.disabled = false;
+            }
+        });
+
+        // ===== PDF Merge Tab =====
+        const pdfFiles = document.getElementById('pdfFiles');
+        const mergePdfUploadArea = document.getElementById('mergePdfUploadArea');
+        const pdfFilesList = document.getElementById('pdfFilesList');
+        const mergePDFForm = document.getElementById('mergePDFForm');
+        const mergePDFResult = document.getElementById('mergePDFResult');
+        const mergeSubmitBtn = document.getElementById('mergeSubmitBtn');
+
+        let selectedPdfFiles = [];
+
+        // Merge PDF upload area interactions
+        mergePdfUploadArea.addEventListener('click', () => pdfFiles.click());
+
+        pdfFiles.addEventListener('change', function () {
+            handlePdfFiles(Array.from(this.files));
+        });
+
+        // Drag and drop functionality for merge
+        mergePdfUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            mergePdfUploadArea.classList.add('dragover');
+        });
+
+        mergePdfUploadArea.addEventListener('dragleave', () => {
+            mergePdfUploadArea.classList.remove('dragover');
+        });
+
+        mergePdfUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            mergePdfUploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                handlePdfFiles(Array.from(e.dataTransfer.files));
+            }
+        });
+
+        function handlePdfFiles(files) {
+            const validFiles = files.filter(file => {
+                if (file.type !== 'application/pdf') {
+                    showError(mergePDFResult, `${file.name} - শুধুমাত্র PDF ফাইল নির্বাচন করুন`);
+                    return false;
+                }
+                if (file.size > 50 * 1024 * 1024) {
+                    showError(mergePDFResult, `${file.name} - ফাইল সাইজ 50MB এর বেশি হতে পারবে না`);
+                    return false;
+                }
+                return true;
+            });
+
+            // Add new files to selected files
+            validFiles.forEach(file => {
+                if (!selectedPdfFiles.some(f => f.name === file.name && f.size === file.size)) {
+                    selectedPdfFiles.push(file);
+                }
+            });
+
+            updatePdfFilesList();
+            updateMergeSubmitButton();
+        }
+
+        function updatePdfFilesList() {
+            if (selectedPdfFiles.length === 0) {
+                pdfFilesList.innerHTML = '<p class="text-gray-500 text-center py-4">কোন PDF ফাইল নির্বাচন করা হয়নি</p>';
+                return;
+            }
+
+            pdfFilesList.innerHTML = selectedPdfFiles.map((file, index) => `
+                <div class="file-item">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                            <span class="text-gray-700 text-sm font-medium">${file.name}</span>
+                            <span class="text-gray-500 text-xs ml-2">(${formatFileSize(file.size)})</span>
+                        </div>
+                        <button type="button" class="text-red-500 hover:text-red-700 remove-file" data-index="${index}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-file').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.closest('.remove-file').dataset.index);
+                    selectedPdfFiles.splice(index, 1);
+                    updatePdfFilesList();
+                    updateMergeSubmitButton();
+                });
+            });
+        }
+
+        function updateMergeSubmitButton() {
+            mergeSubmitBtn.disabled = selectedPdfFiles.length < 2;
+        }
+
+        mergePDFForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (selectedPdfFiles.length < 2) {
+                showError(mergePDFResult, 'অন্তত ২টি PDF ফাইল নির্বাচন করুন');
+                return;
+            }
+
+            const formData = new FormData();
+            selectedPdfFiles.forEach((file, index) => {
+                formData.append('pdfs', file);
+            });
+
+            showLoading(mergePDFResult);
+            mergeSubmitBtn.disabled = true;
+
+            try {
+               const response = await fetch('/api/process-pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+          
+
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.details || 'PDF মার্জ ব্যর্থ হয়েছে');
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                showSuccess(
+                    mergePDFResult,
+                    `${selectedPdfFiles.length}টি PDF সফলভাবে মার্জ হয়েছে!`,
+                    url,
+                    'merged.pdf'
+                );
+
+            } catch (error) {
+                console.error('PDF Merge Error:', error);
+                showError(mergePDFResult, error.message || 'PDF মার্জ করতে সমস্যা হয়েছে');
+            } finally {
+                mergeSubmitBtn.disabled = false;
+            }
+        });
+
+        // Initialize
+        updatePdfFilesList();
+        updateMergeSubmitButton();
+        processSubmitBtn.disabled = true;
+    </script>
+</body>
+
+</html>

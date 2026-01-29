@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fs = require('fs');
+const multer = require("multer");
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -44,6 +46,11 @@ function cleanFolder(folderPath) {
     fs.unlinkSync(path.join(folderPath, file));
   });
 }
+
+
+
+
+
 
 // =======================
 // PDF → Image
@@ -137,7 +144,7 @@ async function mainFinalOutput() {
 
     await sharp(path.join(stage2, file))
       .negate()
-      .linear(1.2, -30) // dark + contrast
+      .linear(1.5, -30) // dark + contrast
       .toFile(path.join(finalOutput, file));
 
     console.log('MainFinalOutput done (dark + contrast):', file);
@@ -264,5 +271,6 @@ async function main() {
 }
 
 main();
+
 
 module.exports = app;
