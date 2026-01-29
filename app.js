@@ -156,8 +156,9 @@ async function mainFinalOutput() {
 function cleanupTempFolders() {
   const stage1 = path.join(__dirname, 'stage_1');
   const upload = path.join(__dirname, 'upload');
+  const MainFinalOutput = path.join(__dirname, 'MainFinalOutput');
 
-  [stage1, upload].forEach(folder => {
+  [stage1, upload , MainFinalOutput].forEach(folder => {
     if (fs.existsSync(folder)) {
       fs.rmSync(folder, { recursive: true, force: true });
       console.log(`${path.basename(folder)} deleted`);
@@ -255,8 +256,9 @@ async function main() {
   await stageOne();
   await stageTwo();
   await mainFinalOutput();
-  cleanupTempFolders();
+  
   await createPDFfromImages();
+  cleanupTempFolders();
 
   console.log('🔥 ALL STAGES DONE. Final output PDF is FinalOutput.pdf');
 }
