@@ -4,64 +4,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF প্রসেসর | Premium</title>
+    <title>PDF প্রসেসর | Premium Edition</title>
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Anek Bangla Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..800&display=swap" rel="stylesheet">
+    <!-- Li Ador Noirrit Font -->
     <style>
+     
         body {
-            font-family: 'Anek Bangla', sans-serif;
-        }
-
-        .tab-button.active {
-            @apply bg-indigo-600 text-white;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+  font-family: "Anek Bangla", sans-serif;
         }
 
         .file-upload-area {
-            border: 2px dashed #d1d5db;
-            transition: all 0.3s ease;
+            border: 2px dashed #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .file-upload-area:hover,
+        .file-upload-area::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .file-upload-area:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .file-upload-area:hover {
+            border-color: #6366f1;
+            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+            transform: translateY(-2px);
+        }
+
         .file-upload-area.dragover {
-            border-color: #4F46E5;
-            background-color: #f8faff;
+            border-color: #4f46e5;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.2);
         }
 
         .file-upload-icon {
-            color: #9CA3AF;
-            transition: color 0.3s ease;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .file-upload-area:hover .file-upload-icon {
-            color: #4F46E5;
+            color: #6366f1;
+            transform: scale(1.1) translateY(-5px);
+            animation: bounce 0.6s ease-in-out;
         }
 
-        .file-item {
-            @apply bg-gray-50 border border-gray-200 rounded-lg p-3 mb-2;
-        }
+        @keyframes bounce {
 
-        .file-item:last-child {
-            @apply mb-0;
+            0%,
+            100% {
+                transform: scale(1.1) translateY(-5px);
+            }
+
+            50% {
+                transform: scale(1.1) translateY(-10px);
+            }
         }
 
         .loading-spinner {
-            border: 3px solid #f3f4f6;
-            border-top: 3px solid #4F46E5;
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #6366f1;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+            width: 48px;
+            height: 48px;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
         @keyframes spin {
@@ -74,75 +99,463 @@
             }
         }
 
-        .success-alert {
-            @apply bg-green-50 border border-green-200 rounded-xl p-4;
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
         }
 
-        .error-alert {
-            @apply bg-red-50 border border-red-200 rounded-xl p-4;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .input-field {
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        .input-field:hover {
+            border-color: #a5b4fc;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover:not(:disabled)::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .success-card {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #86efac;
+            animation: scaleIn 0.4s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .error-card {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 2px solid #fca5a5;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
         }
 
         .download-btn {
-            @apply bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg inline-block transition duration-200 mt-2;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .download-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .card-shadow {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .label-text {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .helper-text {
+            color: #6b7280;
+            font-size: 0.8rem;
+        }
+
+        select,
+        textarea {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        textarea {
+            background-image: none;
+        }
+
+        .file-badge {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 1px solid #93c5fd;
+            animation: slideInDown 0.4s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gradient-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Pulse animation for loading */
+        .pulse-slow {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Floating animation for header icon */
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 640px) {
+            .gradient-header {
+                padding: 1.5rem 1rem !important;
+            }
+
+            .gradient-header h1 {
+                font-size: 1.75rem !important;
+            }
+
+            .gradient-header p {
+                font-size: 0.8rem !important;
+            }
+
+            .label-text {
+                font-size: 0.85rem;
+            }
+
+            .helper-text {
+                font-size: 0.75rem;
+            }
+
+            .btn-primary {
+                padding: 0.875rem 1rem !important;
+                font-size: 1rem !important;
+            }
+
+            .file-upload-area {
+                padding: 2rem 1rem !important;
+            }
+
+            .file-upload-icon svg {
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+
+            .input-field {
+                padding: 0.875rem !important;
+                font-size: 0.95rem;
+            }
+
+            select,
+            textarea {
+                font-size: 0.95rem;
+            }
+
+            .card-shadow {
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+            }
+
+            body {
+                padding: 0.5rem !important;
+            }
+
+            .success-card,
+            .error-card {
+                padding: 1rem !important;
+            }
+
+            .download-btn {
+                padding: 0.875rem 1.5rem !important;
+                font-size: 0.95rem !important;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (max-width: 768px) and (min-width: 641px) {
+            .gradient-header {
+                padding: 2rem 1.5rem !important;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 380px) {
+            .gradient-header h1 {
+                font-size: 1.5rem !important;
+            }
+
+            .grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .file-badge .flex {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection color */
+        ::selection {
+            background-color: #6366f1;
+            color: white;
         }
     </style>
 </head>
 
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-lg w-full max-w-md overflow-hidden">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-center">
-            <h1 class="text-2xl font-bold text-white">PDF প্রসেসর | Premium</h1>
+<body
+    class="bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6">
+    <div class="bg-white rounded-3xl card-shadow w-full max-w-2xl overflow-hidden fade-in">
+
+        <!-- Premium Header -->
+        <div class="gradient-header p-8 text-center relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-1/2 -translate-y-1/2">
+                </div>
+                <div class="absolute bottom-0 right-0 w-60 h-60 bg-white rounded-full translate-x-1/3 translate-y-1/3">
+                </div>
+            </div>
+            <div class="relative">
+                <div class="inline-block p-3 bg-white/20 rounded-2xl backdrop-blur-sm mb-3 float-animation">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">PDF প্রসেসর</h1>
+                <p class="text-indigo-100 text-sm md:text-base font-medium">অনলাইন ক্লাসের  স্লাইড প্রসেসিং  টুল
+                </p>
+            </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="flex justify-around bg-gray-100 p-2">
-            <button class="tab-button px-3 py-2 rounded-lg font-semibold active" data-tab="process">PDF প্রসেস</button>
-            <button class="tab-button px-3 py-2 rounded-lg font-semibold" data-tab="mergePDFs">PDF মার্জ</button>
-        </div>
+        <!-- Main Form Container -->
+        <div class="p-6 md:p-8">
+            <form id="pdfForm" class="space-y-6">
 
-        <div class="p-6">
-            <!-- Tab 1: PDF Process -->
-            <div id="process" class="tab-content active">
-                <form id="pdfForm" class="flex flex-col space-y-5">
-                    <div class="file-upload-area rounded-xl p-6 text-center cursor-pointer" id="pdfUploadArea">
+                <!-- PDF Upload Area -->
+                <div>
+                    <label class="label-text block mb-3">পিডিএফ ফাইল নির্বাচন করুন</label>
+                    <div class="file-upload-area rounded-2xl p-8 text-center cursor-pointer" id="pdfUploadArea">
                         <input type="file" name="pdf" id="pdfInput" accept="application/pdf" class="hidden">
-                        <div class="file-upload-icon mb-3">
-                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="file-upload-icon mb-4">
+                            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
                                 </path>
                             </svg>
                         </div>
-                        <p class="text-gray-700 font-medium mb-1">PDF ফাইল নির্বাচন করুন</p>
-                        <p class="text-gray-500 text-sm">বা ফাইলটি এখানে ড্রপ করুন</p>
-                        <p class="text-gray-400 text-xs mt-2">সর্বোচ্চ সাইজ: 50MB</p>
+                        <p class="text-gray-800 font-semibold text-lg mb-2">ক্লিক করে আপলোড করুন</p>
+                        <p class="text-gray-500 text-sm mb-1">অথবা ফাইলটি এখানে ড্র্যাগ করুন</p>
+                        <p class="text-gray-400 text-xs mt-3 inline-block px-4 py-1 bg-gray-100 rounded-full">সর্বোচ্চ
+                            সাইজ: 50MB</p>
                     </div>
 
-                    <!-- Processing Mode Selection -->
-                    <div class="space-y-3">
-                        <label class="text-gray-700 font-medium">প্রসেসিং মোড নির্বাচন করুন:</label>
-                        <select name="mode" id="processingMode"
-                            class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="negative">নেগেটিভ মোড</option>
-                            <option value="grayscale">গ্রেস্কেল মোড</option>
-                            <option value="sepia">সেপিয়া মোড</option>
-                            <option value="normal">নরমাল মোড</option>
-                        </select>
-                    </div>
-
-                    <div id="pdfFileInfo" class="hidden bg-green-50 border border-green-200 rounded-lg p-3">
+                    <!-- Selected File Display -->
+                    <div id="pdfFileInfo" class="hidden mt-4 file-badge rounded-xl p-4 fade-in">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                    </path>
-                                </svg>
-                                <span id="pdfFileName" class="text-green-700 font-medium text-sm"></span>
+                            <div class="flex items-center flex-1 min-w-0">
+                                <div
+                                    class="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3 flex-1 min-w-0">
+                                    <p id="pdfFileName" class="text-blue-900 font-semibold text-sm truncate"></p>
+                                    <p id="pdfFileSize" class="text-blue-700 text-xs mt-0.5"></p>
+                                </div>
                             </div>
-                            <button type="button" id="removePdfFile" class="text-red-500 hover:text-red-700">
+                            <button type="button" id="removePdfFile"
+                                class="ml-3 flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12"></path>
@@ -150,65 +563,111 @@
                             </button>
                         </div>
                     </div>
-                    <button type="submit"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        id="processSubmitBtn">
-                        আপলোড & প্রসেস করুন
-                    </button>
-                </form>
-                <div id="pdfResult" class="mt-6 text-center"></div>
-            </div>
+                </div>
 
-            <!-- Tab 2: Merge PDFs -->
-            <div id="mergePDFs" class="tab-content">
-                <form id="mergePDFForm" class="flex flex-col space-y-5">
-                    <div class="file-upload-area rounded-xl p-6 text-center cursor-pointer" id="mergePdfUploadArea">
-                        <input type="file" name="pdfs" id="pdfFiles" multiple accept="application/pdf" class="hidden">
-                        <div class="file-upload-icon mb-3">
-                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <p class="text-gray-700 font-medium mb-1">একাধিক PDF ফাইল নির্বাচন করুন</p>
-                        <p class="text-gray-500 text-sm">বা ফাইলগুলি এখানে ড্রপ করুন</p>
-                        <p class="text-gray-400 text-xs mt-2">সর্বোচ্চ ২০টি PDF, প্রতিটি 50MB</p>
+                <!-- Mood Selector -->
+                <div>
+                    <label for="moodSelector" class="label-text block mb-3">মুড সিলেক্ট করুন</label>
+                    <select name="mood" id="moodSelector"
+                        class="input-field w-full border-2 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                        <option value="">একটি মুড নির্বাচন করুন...</option>
+                        <option value="negative">Negative</option>
+                        <option value="math_mahir_slides">Math Mahir Slides</option>
+                    </select>
+                    <p class="helper-text mt-2 ml-1">প্রসেসিং এর ধরন নির্বাচন করুন</p>
+                </div>
+
+                <!-- Note Input -->
+                <div>
+                    <label for="noteInput" class="label-text block mb-3">নোট লিখুন</label>
+                    <textarea name="note" id="noteInput" rows="4"
+                        class="input-field w-full border-2 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none bg-white"
+                        placeholder="আপনার নোট এখানে লিখুন... (ঐচ্ছিক)"></textarea>
+                    <p class="helper-text mt-2 ml-1">অতিরিক্ত তথ্য বা নির্দেশনা যোগ করুন</p>
+                </div>
+
+                <!-- Row and Column Selectors -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="slide-in-left">
+                        <label for="rowSelector" class="label-text block mb-3">সারি নির্বাচন করুন</label>
+                        <select name="row" id="rowSelector"
+                            class="input-field w-full border-2 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                            <option value="">সারি...</option>
+                            <option value="1">১</option>
+                            <option value="2">২</option>
+                            <option value="3">৩</option>
+                            <option value="4">৪</option>
+                            <option value="5">৫</option>
+                            <option value="6">৬</option>
+                            <option value="7">৭</option>
+                            <option value="8">৮</option>
+                            <option value="9">৯</option>
+                            <option value="10">১০</option>
+                            <option value="11">১১</option>
+                            <option value="12">১২</option>
+                            <option value="13">১৩</option>
+                            <option value="14">১৪</option>
+                            <option value="15">১৫</option>
+                            <option value="16">১৬</option>
+                            <option value="17">১৭</option>
+                            <option value="18">১৮</option>
+                            <option value="19">১৯</option>
+                            <option value="20">২০</option>
+                        </select>
                     </div>
+                    <div class="slide-in-right">
+                        <label for="columnSelector" class="label-text block mb-3">কলাম নির্বাচন করুন</label>
+                        <select name="column" id="columnSelector"
+                            class="input-field w-full border-2 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                            <option value="">কলাম...</option>
+                            <option value="1">১</option>
+                            <option value="2">২</option>
+                            <option value="3">৩</option>
+                            <option value="4">৪</option>
+                            <option value="5">৫</option>
+                            <option value="6">৬</option>
+                            <option value="7">৭</option>
+                            <option value="8">৮</option>
+                            <option value="9">৯</option>
+                            <option value="10">১০</option>
+                        </select>
+                    </div>
+                </div>
 
-                    <div id="pdfFilesList" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                <!-- Submit Button -->
+                <button type="submit" id="processSubmitBtn"
+                    class="btn-primary w-full text-white font-bold py-4 px-6 rounded-xl text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                    <span class="flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        প্রসেস শুরু করুন
+                    </span>
+                </button>
+            </form>
 
-                    <button type="submit"
-                        class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        id="mergeSubmitBtn" disabled>
-                        PDF মার্জ করুন
-                    </button>
-                </form>
-                <div id="mergePDFResult" class="mt-6 text-center"></div>
-            </div>
+            <!-- Result Area -->
+            <div id="pdfResult" class="mt-6"></div>
         </div>
 
-        <!-- Footer -->
-        <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
-            <p class="text-gray-600 text-sm">Made by Shatadhru | Premium Version</p>
+        <!-- Premium Footer -->
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-5 border-t border-gray-200">
+            <div class="flex items-center justify-center space-x-2">
+                <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <p class="text-gray-700 text-sm font-semibold">Made by Shatadhru</p>
+                <span class="text-gray-400">•</span>
+                <span class="text-indigo-600 text-sm font-bold">Premium Version</span>
+            </div>
         </div>
     </div>
 
     <script>
-      // ===== Tabs Logic =====
-        const tabButtons = document.querySelectorAll(".tab-button");
-        const tabContents = document.querySelectorAll(".tab-content");
-
-        tabButtons.forEach(btn => {
-            btn.addEventListener("click", () => {
-                tabButtons.forEach(b => b.classList.remove("active"));
-                tabContents.forEach(c => c.classList.remove("active"));
-                btn.classList.add("active");
-                document.getElementById(btn.dataset.tab).classList.add("active");
-                clearAllResults();
-            });
-        });
-
         // ===== Utility Functions =====
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -220,68 +679,90 @@
 
         function showLoading(element) {
             element.innerHTML = `
-        <div class="flex flex-col items-center justify-center p-6">
-            <div class="loading-spinner mb-3"></div>
-            <p class="text-gray-700 font-medium">প্রসেস হচ্ছে...</p>
-            <p class="text-gray-500 text-sm mt-1">অনুগ্রহ করে অপেক্ষা করুন</p>
-        </div>
-    `;
+                <div class="flex flex-col items-center justify-center p-8 fade-in">
+                    <div class="loading-spinner mb-4"></div>
+                    <p class="text-gray-800 font-bold text-lg pulse-slow">প্রসেস হচ্ছে...</p>
+                    <p class="text-gray-500 text-sm mt-2">অনুগ্রহ করে অপেক্ষা করুন, এটি কিছু সময় নিতে পারে</p>
+                </div>
+            `;
         }
 
         function showSuccess(element, message, downloadUrl, fileName) {
             element.innerHTML = `
-        <div class="success-alert">
-            <div class="flex items-center mb-2">
-                <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <h3 class="text-green-700 font-bold">${message}</h3>
-            </div>
-            <a href="${downloadUrl}" download="${fileName}" class="download-btn bg-gray-100 px-10 py-2 rounded-2xl">
-                ডাউনলোড করুন
-            </a>
-        </div>
-    `;
+                <div class="success-card rounded-2xl p-6 fade-in">
+                    <div class="flex items-start mb-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <h3 class="text-green-900 font-bold text-lg mb-1">সফলভাবে সম্পন্ন হয়েছে!</h3>
+                            <p class="text-green-700 text-sm">${message}</p>
+                        </div>
+                    </div>
+                    <a href="${downloadUrl}" download="${fileName}" 
+                        class="download-btn w-full text-white font-bold py-3.5 px-6 rounded-xl inline-flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        ডাউনলোড করুন
+                    </a>
+                </div>
+            `;
         }
 
         function showError(element, message) {
             element.innerHTML = `
-        <div class="error-alert">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-                <h3 class="text-red-700 font-bold">${message}</h3>
-            </div>
-        </div>
-    `;
+                <div class="error-card rounded-2xl p-6 fade-in">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" 
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <h3 class="text-red-900 font-bold text-lg mb-1">ত্রুটি ঘটেছে</h3>
+                            <p class="text-red-700 text-sm">${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function clearAllResults() {
-            document.getElementById('pdfResult').innerHTML = '';
-            document.getElementById('mergePDFResult').innerHTML = '';
-        }
-
-        // ===== PDF Process Tab =====
+        // ===== DOM Elements =====
         const pdfInput = document.getElementById('pdfInput');
         const pdfUploadArea = document.getElementById('pdfUploadArea');
         const pdfFileInfo = document.getElementById('pdfFileInfo');
         const pdfFileName = document.getElementById('pdfFileName');
+        const pdfFileSize = document.getElementById('pdfFileSize');
         const removePdfFile = document.getElementById('removePdfFile');
+        const moodSelector = document.getElementById('moodSelector');
+        const noteInput = document.getElementById('noteInput');
+        const rowSelector = document.getElementById('rowSelector');
+        const columnSelector = document.getElementById('columnSelector');
         const pdfForm = document.getElementById('pdfForm');
         const pdfResult = document.getElementById('pdfResult');
         const processSubmitBtn = document.getElementById('processSubmitBtn');
-        const processingMode = document.getElementById('processingMode');
 
-        // Upload interactions
+        // ===== File Upload Interactions =====
         pdfUploadArea.addEventListener('click', () => pdfInput.click());
 
         pdfInput.addEventListener('change', function () {
             if (this.files[0]) handlePdfFile(this.files[0]);
         });
 
-        pdfUploadArea.addEventListener('dragover', e => { e.preventDefault(); pdfUploadArea.classList.add('dragover'); });
-        pdfUploadArea.addEventListener('dragleave', () => pdfUploadArea.classList.remove('dragover'));
+        pdfUploadArea.addEventListener('dragover', e => {
+            e.preventDefault();
+            pdfUploadArea.classList.add('dragover');
+        });
+
+        pdfUploadArea.addEventListener('dragleave', () => {
+            pdfUploadArea.classList.remove('dragover');
+        });
+
         pdfUploadArea.addEventListener('drop', e => {
             e.preventDefault();
             pdfUploadArea.classList.remove('dragover');
@@ -295,7 +776,7 @@
             e.stopPropagation();
             pdfInput.value = '';
             pdfFileInfo.classList.add('hidden');
-            processSubmitBtn.disabled = true;
+            validateForm();
         });
 
         function handlePdfFile(file) {
@@ -307,24 +788,56 @@
                 showError(pdfResult, 'ফাইল সাইজ 50MB এর বেশি হতে পারবে না');
                 return;
             }
-            pdfFileName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+            pdfFileName.textContent = file.name;
+            pdfFileSize.textContent = formatFileSize(file.size);
             pdfFileInfo.classList.remove('hidden');
-            processSubmitBtn.disabled = false;
+            pdfResult.innerHTML = '';
+            validateForm();
         }
 
+        // ===== Form Validation =====
+        function validateForm() {
+            const hasFile = pdfInput.files.length > 0;
+            const hasMood = moodSelector.value !== '';
+            const hasRow = rowSelector.value !== '';
+            const hasColumn = columnSelector.value !== '';
+
+            processSubmitBtn.disabled = !(hasFile && hasMood && hasRow && hasColumn);
+        }
+
+        // Add event listeners to all required fields
+        moodSelector.addEventListener('change', validateForm);
+        rowSelector.addEventListener('change', validateForm);
+        columnSelector.addEventListener('change', validateForm);
+
+        // ===== Form Submission =====
         pdfForm.addEventListener('submit', async e => {
             e.preventDefault();
-            if (!pdfInput.files[0]) { showError(pdfResult, 'PDF ফাইল নির্বাচন করুন'); return; }
+
+            if (!pdfInput.files[0]) {
+                showError(pdfResult, 'PDF ফাইল নির্বাচন করুন');
+                return;
+            }
 
             const formData = new FormData();
             formData.append('pdf', pdfInput.files[0]);
-            formData.append('mode', processingMode.value);
+            formData.append('mode', moodSelector.value);
+            formData.append('mood', moodSelector.value);
+            formData.append('note', noteInput.value);
+            formData.append('row', rowSelector.value);
+            formData.append('column', columnSelector.value);
+
+            
 
             showLoading(pdfResult);
             processSubmitBtn.disabled = true;
 
             try {
-                const response = await fetch(`${window.location.origin}/api/process-pdf`, { method: 'POST', body: formData });
+                const response = await fetch(`${window.location.origin}/api/process-pdf`, {
+                    method: 'POST',
+                    body: formData
+                });
+
                 const contentType = response.headers.get('content-type') || '';
 
                 if (!response.ok) {
@@ -340,8 +853,8 @@
                 if (contentType.includes('application/pdf')) {
                     const blob = await response.blob();
                     const url = URL.createObjectURL(blob);
-                    const modeName = processingMode.options[processingMode.selectedIndex].text;
-                    showSuccess(pdfResult, `সফলভাবে ${modeName} এ প্রসেস হয়েছে!`, url, `processed_${processingMode.value}.pdf`);
+                    const modeName = moodSelector.options[moodSelector.selectedIndex].text;
+                    showSuccess(pdfResult, `আপনার PDF ${modeName} মোডে সফলভাবে প্রসেস হয়েছে`, url, `processed_${moodSelector.value}.pdf`);
                 } else if (contentType.includes('application/json')) {
                     const data = await response.json();
                     console.log('Server returned JSON:', data);
@@ -352,146 +865,12 @@
             } catch (error) {
                 showError(pdfResult, error.message || 'PDF প্রসেস করতে সমস্যা হয়েছে');
             } finally {
-                processSubmitBtn.disabled = false;
+                validateForm();
             }
         });
 
-        // ===== PDF Merge Tab =====
-        const pdfFiles = document.getElementById('pdfFiles');
-        const mergePdfUploadArea = document.getElementById('mergePdfUploadArea');
-        const pdfFilesList = document.getElementById('pdfFilesList');
-        const mergePDFForm = document.getElementById('mergePDFForm');
-        const mergePDFResult = document.getElementById('mergePDFResult');
-        const mergeSubmitBtn = document.getElementById('mergeSubmitBtn');
-
-        let selectedPdfFiles = [];
-
-        mergePdfUploadArea.addEventListener('click', () => pdfFiles.click());
-
-        pdfFiles.addEventListener('change', function () {
-            handlePdfFiles(Array.from(this.files));
-        });
-
-        mergePdfUploadArea.addEventListener('dragover', e => { e.preventDefault(); mergePdfUploadArea.classList.add('dragover'); });
-        mergePdfUploadArea.addEventListener('dragleave', () => mergePdfUploadArea.classList.remove('dragover'));
-        mergePdfUploadArea.addEventListener('drop', e => {
-            e.preventDefault();
-            mergePdfUploadArea.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) handlePdfFiles(Array.from(e.dataTransfer.files));
-        });
-
-        function handlePdfFiles(files) {
-            const validFiles = files.filter(file => {
-                if (file.type !== 'application/pdf') {
-                    showError(mergePDFResult, `${file.name} - শুধুমাত্র PDF ফাইল নির্বাচন করুন`);
-                    return false;
-                }
-                if (file.size > 50 * 1024 * 1024) {
-                    showError(mergePDFResult, `${file.name} - ফাইল সাইজ 50MB এর বেশি হতে পারবে না`);
-                    return false;
-                }
-                return true;
-            });
-
-            validFiles.forEach(file => {
-                const exists = selectedPdfFiles.some(f => f.name === file.name && f.size === file.size);
-                if (!exists) selectedPdfFiles.push(file);
-            });
-
-            updatePdfFilesList();
-            updateMergeSubmitButton();
-        }
-
-        function updatePdfFilesList() {
-            if (selectedPdfFiles.length === 0) {
-                pdfFilesList.innerHTML = '<p class="text-gray-500 text-center py-4">কোন PDF ফাইল নির্বাচন করা হয়নি</p>';
-                return;
-            }
-
-            pdfFilesList.innerHTML = selectedPdfFiles.map((file, index) => `
-        <div class="file-item">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    <span class="text-gray-700 text-sm font-medium">${file.name}</span>
-                    <span class="text-gray-500 text-xs ml-2">(${formatFileSize(file.size)})</span>
-                </div>
-                <button type="button" class="text-red-500 hover:text-red-700 remove-file" data-index="${index}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    `).join('');
-
-            document.querySelectorAll('.remove-file').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.closest('.remove-file').dataset.index);
-                    selectedPdfFiles.splice(index, 1);
-                    updatePdfFilesList();
-                    updateMergeSubmitButton();
-                });
-            });
-        }
-
-        function updateMergeSubmitButton() {
-            mergeSubmitBtn.disabled = selectedPdfFiles.length < 2;
-        }
-
-        mergePDFForm.addEventListener('submit', async e => {
-            e.preventDefault();
-            if (selectedPdfFiles.length < 2) { showError(mergePDFResult, 'অন্তত ২টি PDF ফাইল নির্বাচন করুন'); return; }
-
-            const formData = new FormData();
-            selectedPdfFiles.forEach(file => formData.append('pdfs', file));
-
-            showLoading(mergePDFResult);
-            mergeSubmitBtn.disabled = true;
-
-            try {
-                const response = await fetch('/api/process-pdf', { method: 'POST', body: formData });
-                const contentType = response.headers.get('content-type') || '';
-
-                if (!response.ok) {
-                    if (contentType.includes('application/json')) {
-                        const errData = await response.json();
-                        throw new Error(errData.details || 'Server error');
-                    } else {
-                        const errText = await response.text();
-                        throw new Error(errText || 'Server error');
-                    }
-                }
-
-                if (contentType.includes('application/pdf')) {
-                    const blob = await response.blob();
-                    const url = URL.createObjectURL(blob);
-                    showSuccess(mergePDFResult, `${selectedPdfFiles.length}টি PDF সফলভাবে মার্জ হয়েছে!`, url, 'merged.pdf');
-                } else if (contentType.includes('application/json')) {
-                    const data = await response.json();
-                    console.log('JSON response:', data);
-                } else {
-                    const text = await response.text();
-                    throw new Error(text || 'Unknown server response');
-                }
-
-            } catch (error) {
-                showError(mergePDFResult, error.message || 'PDF মার্জ করতে সমস্যা হয়েছে');
-            } finally {
-                mergeSubmitBtn.disabled = false;
-            }
-        });
-
-        // Initialize
-        updatePdfFilesList();
-        updateMergeSubmitButton();
-        processSubmitBtn.disabled = true;
-
+        // ===== Initialize =====
+        validateForm();
     </script>
 </body>
 

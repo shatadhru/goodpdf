@@ -7,7 +7,6 @@ var fs = require('fs');
 const multer = require("multer");
 const cors = require('cors');
 
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -50,13 +49,12 @@ function cleanFolder(folderPath) {
 
 app.use(cors());
 
+// ensure uploads folder exists (never delete)
+ensureFolder('uploads');
 
-// ensure uploads folder exists
-if (!fs.existsSync('uploads')) {
-  fs.mkdirSync('uploads');
-}
-
-// storage
+// =======================
+// Multer storage
+// =======================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -66,42 +64,28 @@ const storage = multer.diskStorage({
   }
 });
 
-// only pdf filter
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'application/pdf') {
-    cb(null, true);
-  } else {
-    cb(new Error('Only PDF allowed ❌'), false);
-  }
+  if (file.mimetype === 'application/pdf') cb(null, true);
+  else cb(new Error('Only PDF allowed ❌'), false);
 };
 
 const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 100 * 1024 * 1024 // 10MB
-  }
+  storage,
+  fileFilter,
+  limits: { fileSize: 100 * 1024 * 1024 } // 100MB
 });
-
 
 // =======================
 // PDF → Image
 // =======================
-async function convertPDF(pdfPath) {
+async function convertPDF(pdfPath, tempFolder) {
   try {
-    const uploadFolder = path.join(__dirname, 'upload');
+    ensureFolder(tempFolder);
+    cleanFolder(tempFolder);
 
-    ensureFolder(uploadFolder);
-    cleanFolder(uploadFolder);
-
-    const options = {
-      outputFolderName: 'upload',
-      viewportScale: 2
-    };
-
+    const options = { outputFolderName: tempFolder, viewportScale: 2 };
     const pdf = await new PDFToImage().load(pdfPath);
     console.log('Total Pages:', pdf.document.numPages);
-
     await pdf.convert(options);
     console.log('PDF → Image done');
   } catch (err) {
@@ -110,222 +94,182 @@ async function convertPDF(pdfPath) {
   }
 }
 
-
 // =======================
 // Stage 1 → negate + grayscale + dark
 // =======================
-async function stageOne() {
-  const inputFolder = path.join(__dirname, 'upload');
-  const stage1 = path.join(__dirname, 'stage_1');
+async function stageOne(inputFolder, stageFolder) {
+  ensureFolder(stageFolder);
+  cleanFolder(stageFolder);
 
-  ensureFolder(stage1);
-  cleanFolder(stage1);
-
-  const files = fs.readdirSync(inputFolder);
+  const files = fs.readdirSync(inputFolder).filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f));
+  if (files.length === 0) return;
 
   for (const file of files) {
-    if (!/\.(png|jpg|jpeg|webp)$/i.test(file)) continue;
-
     await sharp(path.join(inputFolder, file))
       .grayscale()
       .negate()
-      .linear(1.3, -50) // dark + contrast
-      .toFile(path.join(stage1, file));
-
-    console.log('Stage 1 done (dark + contrast):', file);
+      .linear(1.3, -50)
+      .toFile(path.join(stageFolder, file));
+    console.log('Stage 1 done:', file);
   }
 }
 
 // =======================
 // Stage 2 → negate only + dark
 // =======================
-async function stageTwo() {
-  const stage1 = path.join(__dirname, 'stage_1');
-  const stage2 = path.join(__dirname, 'stage_2');
+async function stageTwo(stage1Folder, stage2Folder) {
+  ensureFolder(stage2Folder);
+  cleanFolder(stage2Folder);
 
-  ensureFolder(stage2);
-  cleanFolder(stage2);
-
-  const files = fs.readdirSync(stage1);
+  const files = fs.readdirSync(stage1Folder).filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f));
+  if (files.length === 0) return;
 
   for (const file of files) {
-    if (!/\.(png|jpg|jpeg|webp)$/i.test(file)) continue;
-
-    await sharp(path.join(stage1, file))
+    await sharp(path.join(stage1Folder, file))
       .negate()
-      .linear(1.2, -30) // dark + contrast
-      .toFile(path.join(stage2, file));
-
-    console.log('Stage 2 done (dark + contrast):', file);
+      .linear(1.2, -30)
+      .toFile(path.join(stage2Folder, file));
+    console.log('Stage 2 done:', file);
   }
 }
 
 // =======================
-// Stage 3 → MainFinalOutput → negate only + dark
+// Stage 3 → MainFinalOutput
 // =======================
-async function mainFinalOutput() {
-  const stage2 = path.join(__dirname, 'stage_2');
-  const finalOutput = path.join(__dirname, 'MainFinalOutput');
+async function mainFinalOutput(stage2Folder, finalFolder) {
+  ensureFolder(finalFolder);
+  cleanFolder(finalFolder);
 
-  ensureFolder(finalOutput);
-  cleanFolder(finalOutput);
-
-  const files = fs.readdirSync(stage2);
+  const files = fs.readdirSync(stage2Folder).filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f));
+  if (files.length === 0) return;
 
   for (const file of files) {
-    if (!/\.(png|jpg|jpeg|webp)$/i.test(file)) continue;
-
-    await sharp(path.join(stage2, file))
+    await sharp(path.join(stage2Folder, file))
       .negate()
-      .linear(1.5, -30) // dark + contrast
-      .toFile(path.join(finalOutput, file));
-
-    console.log('MainFinalOutput done (dark + contrast):', file);
+      .linear(1.5, -30)
+      .toFile(path.join(finalFolder, file));
+    console.log('MainFinalOutput done:', file);
   }
 
-  // Cleanup Stage 2
-  if (fs.existsSync(stage2)) {
-    fs.rmSync(stage2, { recursive: true, force: true });
-    console.log('Stage 2 deleted, only MainFinalOutput remains');
-  }
+  // Cleanup Stage2
+  fs.rmSync(stage2Folder, { recursive: true, force: true });
+  console.log('Stage 2 deleted');
 }
 
 // =======================
-// Cleanup Stage 1 + Upload
+// Cleanup stage folders only
 // =======================
-function cleanupTempFolders() {
-  const stage1 = path.join(__dirname, 'stage_1');
-  const upload = path.join(__dirname, 'upload');
-  const MainFinalOutput = path.join(__dirname, 'MainFinalOutput');
-  const uploads = path.join(__dirname, 'uploads');
-
-  [stage1, upload , MainFinalOutput, uploads].forEach(folder => {
+function cleanupTempFolders(folders) {
+  folders.forEach(folder => {
     if (fs.existsSync(folder)) {
       fs.rmSync(folder, { recursive: true, force: true });
-      console.log(`${path.basename(folder)} deleted`);
+      console.log(`${folder} deleted`);
     }
   });
 }
 
 // =======================
-// ===== A4 PDF layout =====
+// PDF layout
+// =======================
 const A4_WIDTH = 595;
 const A4_HEIGHT = 842;
-const COLS = 2;
-const ROWS = 4;
-const IMAGE_WIDTH = A4_WIDTH / COLS;
-const IMAGE_HEIGHT = (A4_HEIGHT / ROWS) * 0.9;
+const COLS_DEFAULT = 2;
+const ROWS_DEFAULT = 4;
+const MAX_COLS = 10;
+const MAX_ROWS = 20;
 
 // =======================
-// Footer text (every page bottom)
+// Create PDF from images
 // =======================
-const footerText = "Your footer text here";
-
-// =======================
-// Create PDF from MainFinalOutput
-// =======================
-async function createPDFfromImages() {
-  const finalOutput = path.join(__dirname, 'MainFinalOutput');
+async function createPDFfromImages(finalFolder, cols = COLS_DEFAULT, rows = ROWS_DEFAULT) {
   const outputPDF = path.join(__dirname, 'FinalOutput.pdf');
+  const files = fs.readdirSync(finalFolder).filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f)).sort();
+  if (files.length === 0) return;
 
-  const files = fs.readdirSync(finalOutput)
-    .filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f))
-    .sort();
-
-  if (files.length === 0) {
-    console.log('No images found in MainFinalOutput to create PDF');
-    return;
-  }
+  const IMAGE_WIDTH = A4_WIDTH / cols;
+  const IMAGE_HEIGHT = (A4_HEIGHT / rows) * 0.9;
+  const PADDING = 4;
 
   const doc = new PDFDocument({ autoFirstPage: false });
   doc.pipe(fs.createWriteStream(outputPDF));
 
-  let x = 0, y = 0, count = 0, pageNum = 1;
+  let x = 0, y = 0, count = 0;
 
   for (const file of files) {
-    const imgPath = path.join(finalOutput, file);
-
-    // new page if needed
-    if (count % (COLS * ROWS) === 0) {
+    const imgPath = path.join(finalFolder, file);
+    if (count % (cols * rows) === 0) {
       doc.addPage({ size: [A4_WIDTH, A4_HEIGHT] });
-      x = 0;
-      y = 0;
+      x = 0; y = 0;
     }
 
-    // Add image
-    doc.image(imgPath, x, y, { width: IMAGE_WIDTH, height: IMAGE_HEIGHT });
+    try {
+      doc.image(imgPath, x + PADDING, y + PADDING, { fit: [IMAGE_WIDTH - 2 * PADDING, IMAGE_HEIGHT - 2 * PADDING] });
+    } catch (err) {
+      console.warn('Fallback image draw:', imgPath, err);
+      doc.image(imgPath, x, y, { width: IMAGE_WIDTH, height: IMAGE_HEIGHT });
+    }
 
-    // Add 1px border
+    // border & slide number
     doc.save();
     doc.lineWidth(1);
     doc.strokeColor('black');
     doc.rect(x, y, IMAGE_WIDTH, IMAGE_HEIGHT).stroke();
     doc.restore();
 
-    // Bottom-right per-slide number
-    const slideNum = count + 1;
-    doc.fontSize(6)
-       .fillColor('black')
-       .text(slideNum.toString(), x + IMAGE_WIDTH - 15, y + IMAGE_HEIGHT - 15);
+    doc.fontSize(6).fillColor('black').text((count + 1).toString(), x + IMAGE_WIDTH - 15, y + IMAGE_HEIGHT - 15);
 
     x += IMAGE_WIDTH;
-    if ((count + 1) % COLS === 0) {
-      x = 0;
-      y += IMAGE_HEIGHT;
-    }
-
-   
-
+    if ((count + 1) % cols === 0) { x = 0; y += IMAGE_HEIGHT; }
     count++;
-    console.log('Added to PDF:', file);
   }
 
   doc.end();
   console.log('✅ PDF created at:', outputPDF);
 }
-async function main(pdfPath) {
-  ensureFolder(path.join(__dirname, 'upload'));
-  ensureFolder(path.join(__dirname, 'stage_1'));
-  ensureFolder(path.join(__dirname, 'stage_2'));
-  ensureFolder(path.join(__dirname, 'MainFinalOutput'));
 
-  await convertPDF(pdfPath);
-  await stageOne();
-  await stageTwo();
-  await mainFinalOutput();
-  await createPDFfromImages();
+// =======================
+// Main pipeline
+// =======================
+async function main(pdfPath, row, column) {
+  const tempUpload = path.join(__dirname, 'upload');
+  const stage1Folder = path.join(__dirname, 'stage_1');
+  const stage2Folder = path.join(__dirname, 'stage_2');
+  const finalFolder = path.join(__dirname, 'MainFinalOutput');
 
-  cleanupTempFolders();
+  // recreate folders for this run
+  [tempUpload, stage1Folder, stage2Folder, finalFolder].forEach(f => ensureFolder(f));
 
+  await convertPDF(pdfPath, tempUpload);
+  await stageOne(tempUpload, stage1Folder);
+  await stageTwo(stage1Folder, stage2Folder);
+  await mainFinalOutput(stage2Folder, finalFolder);
+
+  // Layout
+  let cols = COLS_DEFAULT;
+  let rows = ROWS_DEFAULT;
+  const parsedCol = parseInt(column, 10);
+  const parsedRow = parseInt(row, 10);
+  if (Number.isInteger(parsedCol) && parsedCol >= 1 && parsedCol <= MAX_COLS) cols = parsedCol;
+  if (Number.isInteger(parsedRow) && parsedRow >= 1 && parsedRow <= MAX_ROWS) rows = parsedRow;
+
+  console.log(`Generating PDF with layout ${rows} rows x ${cols} cols`);
+  await createPDFfromImages(finalFolder, cols, rows);
+
+  cleanupTempFolders([stage1Folder, stage2Folder, finalFolder, tempUpload]);
   console.log('🔥 ALL STAGES DONE');
 }
 
-
-
 // ===== Serve frontend =====
 app.use(express.static(path.join(__dirname, "public")));
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
 // ===== POST API =====
 app.post(
   '/api/process-pdf',
   (req, res, next) => {
-    // multer middleware manually call
-    upload.single('pdf')(req, res, (err) => {
+    upload.single('pdf')(req, res, err => {
       if (err) {
-        // multer-specific errors
-        let message = 'File upload error';
-        if (err instanceof multer.MulterError) {
-          if (err.code === 'LIMIT_FILE_SIZE') {
-            message = 'File too large ❌';
-          } else {
-            message = err.message;
-          }
-        } else {
-          message = err.message;
-        }
+        let message = err instanceof multer.MulterError ? err.message : err.message;
         return res.status(400).json({ details: message });
       }
       next();
@@ -333,24 +277,13 @@ app.post(
   },
   async (req, res) => {
     try {
-      if (!req.file) {
-        return res.status(400).json({ details: 'No PDF uploaded ❌' });
-      }
-
-      const uploadedPdfPath = req.file.path;
-      console.log('Uploaded PDF:', uploadedPdfPath);
-
-      // Run full pipeline
-      await main(uploadedPdfPath);
+      if (!req.file) return res.status(400).json({ details: 'No PDF uploaded ❌' });
+      const row = req.body.row, column = req.body.column;
+      await main(req.file.path, row, column);
 
       const finalPDF = path.join(__dirname, 'FinalOutput.pdf');
-
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader(
-        'Content-Disposition',
-        'attachment; filename="FinalOutput.pdf"'
-      );
-
+      res.setHeader('Content-Disposition', 'attachment; filename="FinalOutput.pdf"');
       fs.createReadStream(finalPDF).pipe(res);
 
     } catch (err) {
@@ -365,8 +298,5 @@ app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
   res.status(500).json({ details: err.message || 'Something went wrong ❌' });
 });
-
-
-
 
 module.exports = app;
