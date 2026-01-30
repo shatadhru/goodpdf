@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fs = require('fs');
 const multer = require("multer");
+const cors = require('cors');
 
 
 var indexRouter = require('./routes/index');
@@ -47,17 +48,47 @@ function cleanFolder(folderPath) {
   });
 }
 
+app.use(cors());
 
 
+// ensure uploads folder exists
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
 
+// storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '.pdf');
+  }
+});
+
+// only pdf filter
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'application/pdf') {
+    cb(null, true);
+  } else {
+    cb(new Error('Only PDF allowed ❌'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 100 * 1024 * 1024 // 10MB
+  }
+});
 
 
 // =======================
 // PDF → Image
 // =======================
-async function convertPDF() {
+async function convertPDF(pdfPath) {
   try {
-    const filePath = path.join(__dirname, 'sample.pdf');
     const uploadFolder = path.join(__dirname, 'upload');
 
     ensureFolder(uploadFolder);
@@ -68,15 +99,17 @@ async function convertPDF() {
       viewportScale: 2
     };
 
-    const pdf = await new PDFToImage().load(filePath);
+    const pdf = await new PDFToImage().load(pdfPath);
     console.log('Total Pages:', pdf.document.numPages);
 
     await pdf.convert(options);
     console.log('PDF → Image done');
   } catch (err) {
     console.error('PDF convert error:', err);
+    throw err;
   }
 }
+
 
 // =======================
 // Stage 1 → negate + grayscale + dark
@@ -164,8 +197,9 @@ function cleanupTempFolders() {
   const stage1 = path.join(__dirname, 'stage_1');
   const upload = path.join(__dirname, 'upload');
   const MainFinalOutput = path.join(__dirname, 'MainFinalOutput');
+  const uploads = path.join(__dirname, 'uploads');
 
-  [stage1, upload , MainFinalOutput].forEach(folder => {
+  [stage1, upload , MainFinalOutput, uploads].forEach(folder => {
     if (fs.existsSync(folder)) {
       fs.rmSync(folder, { recursive: true, force: true });
       console.log(`${path.basename(folder)} deleted`);
@@ -249,28 +283,90 @@ async function createPDFfromImages() {
   doc.end();
   console.log('✅ PDF created at:', outputPDF);
 }
-
-// =======================
-// Main Pipeline
-// =======================
-async function main() {
+async function main(pdfPath) {
   ensureFolder(path.join(__dirname, 'upload'));
   ensureFolder(path.join(__dirname, 'stage_1'));
   ensureFolder(path.join(__dirname, 'stage_2'));
   ensureFolder(path.join(__dirname, 'MainFinalOutput'));
 
-  await convertPDF();
+  await convertPDF(pdfPath);
   await stageOne();
   await stageTwo();
   await mainFinalOutput();
-  
   await createPDFfromImages();
+
   cleanupTempFolders();
 
-  console.log('🔥 ALL STAGES DONE. Final output PDF is FinalOutput.pdf');
+  console.log('🔥 ALL STAGES DONE');
 }
 
-main();
+
+
+// ===== Serve frontend =====
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+// ===== POST API =====
+app.post(
+  '/api/process-pdf',
+  (req, res, next) => {
+    // multer middleware manually call
+    upload.single('pdf')(req, res, (err) => {
+      if (err) {
+        // multer-specific errors
+        let message = 'File upload error';
+        if (err instanceof multer.MulterError) {
+          if (err.code === 'LIMIT_FILE_SIZE') {
+            message = 'File too large ❌';
+          } else {
+            message = err.message;
+          }
+        } else {
+          message = err.message;
+        }
+        return res.status(400).json({ details: message });
+      }
+      next();
+    });
+  },
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ details: 'No PDF uploaded ❌' });
+      }
+
+      const uploadedPdfPath = req.file.path;
+      console.log('Uploaded PDF:', uploadedPdfPath);
+
+      // Run full pipeline
+      await main(uploadedPdfPath);
+
+      const finalPDF = path.join(__dirname, 'FinalOutput.pdf');
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="FinalOutput.pdf"'
+      );
+
+      fs.createReadStream(finalPDF).pipe(res);
+
+    } catch (err) {
+      console.error('Processing error:', err);
+      res.status(500).json({ details: err.message || 'PDF processing failed ❌' });
+    }
+  }
+);
+
+// ===== Generic Error Handler =====
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ details: err.message || 'Something went wrong ❌' });
+});
+
+
 
 
 module.exports = app;

@@ -195,7 +195,7 @@
     </div>
 
     <script>
-        // ===== Tabs Logic =====
+      // ===== Tabs Logic =====
         const tabButtons = document.querySelectorAll(".tab-button");
         const tabContents = document.querySelectorAll(".tab-content");
 
@@ -205,8 +205,6 @@
                 tabContents.forEach(c => c.classList.remove("active"));
                 btn.classList.add("active");
                 document.getElementById(btn.dataset.tab).classList.add("active");
-
-                // Clear results when switching tabs
                 clearAllResults();
             });
         });
@@ -222,41 +220,41 @@
 
         function showLoading(element) {
             element.innerHTML = `
-                <div class="flex flex-col items-center justify-center p-6">
-                    <div class="loading-spinner mb-3"></div>
-                    <p class="text-gray-700 font-medium">প্রসেস হচ্ছে...</p>
-                    <p class="text-gray-500 text-sm mt-1">অনুগ্রহ করে অপেক্ষা করুন</p>
-                </div>
-            `;
+        <div class="flex flex-col items-center justify-center p-6">
+            <div class="loading-spinner mb-3"></div>
+            <p class="text-gray-700 font-medium">প্রসেস হচ্ছে...</p>
+            <p class="text-gray-500 text-sm mt-1">অনুগ্রহ করে অপেক্ষা করুন</p>
+        </div>
+    `;
         }
 
         function showSuccess(element, message, downloadUrl, fileName) {
             element.innerHTML = `
-                <div class="success-alert">
-                    <div class="flex items-center mb-2">
-                        <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <h3 class="text-green-700 font-bold">${message}</h3>
-                    </div>
-                    <a href="${downloadUrl}" download="${fileName}" class="download-btn bg-gray-100 px-10 py-2 rounded-2xl">
-                        ডাউনলোড করুন
-                    </a>
-                </div>
-            `;
+        <div class="success-alert">
+            <div class="flex items-center mb-2">
+                <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <h3 class="text-green-700 font-bold">${message}</h3>
+            </div>
+            <a href="${downloadUrl}" download="${fileName}" class="download-btn bg-gray-100 px-10 py-2 rounded-2xl">
+                ডাউনলোড করুন
+            </a>
+        </div>
+    `;
         }
 
         function showError(element, message) {
             element.innerHTML = `
-                <div class="error-alert">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                        <h3 class="text-red-700 font-bold">${message}</h3>
-                    </div>
-                </div>
-            `;
+        <div class="error-alert">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                <h3 class="text-red-700 font-bold">${message}</h3>
+            </div>
+        </div>
+    `;
         }
 
         function clearAllResults() {
@@ -275,24 +273,16 @@
         const processSubmitBtn = document.getElementById('processSubmitBtn');
         const processingMode = document.getElementById('processingMode');
 
-        // PDF upload area interactions
+        // Upload interactions
         pdfUploadArea.addEventListener('click', () => pdfInput.click());
 
         pdfInput.addEventListener('change', function () {
             if (this.files[0]) handlePdfFile(this.files[0]);
         });
 
-        // Drag and drop functionality
-        pdfUploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            pdfUploadArea.classList.add('dragover');
-        });
-
-        pdfUploadArea.addEventListener('dragleave', () => {
-            pdfUploadArea.classList.remove('dragover');
-        });
-
-        pdfUploadArea.addEventListener('drop', (e) => {
+        pdfUploadArea.addEventListener('dragover', e => { e.preventDefault(); pdfUploadArea.classList.add('dragover'); });
+        pdfUploadArea.addEventListener('dragleave', () => pdfUploadArea.classList.remove('dragover'));
+        pdfUploadArea.addEventListener('drop', e => {
             e.preventDefault();
             pdfUploadArea.classList.remove('dragover');
             if (e.dataTransfer.files[0]) {
@@ -301,7 +291,7 @@
             }
         });
 
-        removePdfFile.addEventListener('click', (e) => {
+        removePdfFile.addEventListener('click', e => {
             e.stopPropagation();
             pdfInput.value = '';
             pdfFileInfo.classList.add('hidden');
@@ -313,24 +303,18 @@
                 showError(pdfResult, 'শুধুমাত্র PDF ফাইল নির্বাচন করুন');
                 return;
             }
-
             if (file.size > 50 * 1024 * 1024) {
                 showError(pdfResult, 'ফাইল সাইজ 50MB এর বেশি হতে পারবে না');
                 return;
             }
-
             pdfFileName.textContent = `${file.name} (${formatFileSize(file.size)})`;
             pdfFileInfo.classList.remove('hidden');
             processSubmitBtn.disabled = false;
         }
 
-        pdfForm.addEventListener('submit', async (e) => {
+        pdfForm.addEventListener('submit', async e => {
             e.preventDefault();
-
-            if (!pdfInput.files[0]) {
-                showError(pdfResult, 'PDF ফাইল নির্বাচন করুন');
-                return;
-            }
+            if (!pdfInput.files[0]) { showError(pdfResult, 'PDF ফাইল নির্বাচন করুন'); return; }
 
             const formData = new FormData();
             formData.append('pdf', pdfInput.files[0]);
@@ -340,29 +324,32 @@
             processSubmitBtn.disabled = true;
 
             try {
-                const response = await fetch('/api/process-pdf', {
-                    method: 'POST',
-                    body: formData
-                });
+                const response = await fetch(`${window.location.origin}/api/process-pdf`, { method: 'POST', body: formData });
+                const contentType = response.headers.get('content-type') || '';
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.details || 'প্রসেস ব্যর্থ হয়েছে');
+                    if (contentType.includes('application/json')) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.details || 'প্রসেস ব্যর্থ হয়েছে');
+                    } else {
+                        const errorText = await response.text();
+                        throw new Error(errorText || 'প্রসেস ব্যর্থ হয়েছে');
+                    }
                 }
 
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                const modeName = processingMode.options[processingMode.selectedIndex].text;
-
-                showSuccess(
-                    pdfResult,
-                    `সফলভাবে ${modeName} এ প্রসেস হয়েছে!`,
-                    url,
-                    `processed_${processingMode.value}.pdf`
-                );
-
+                if (contentType.includes('application/pdf')) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const modeName = processingMode.options[processingMode.selectedIndex].text;
+                    showSuccess(pdfResult, `সফলভাবে ${modeName} এ প্রসেস হয়েছে!`, url, `processed_${processingMode.value}.pdf`);
+                } else if (contentType.includes('application/json')) {
+                    const data = await response.json();
+                    console.log('Server returned JSON:', data);
+                } else {
+                    const text = await response.text();
+                    throw new Error(text || 'Unknown server response');
+                }
             } catch (error) {
-                console.error('PDF Processing Error:', error);
                 showError(pdfResult, error.message || 'PDF প্রসেস করতে সমস্যা হয়েছে');
             } finally {
                 processSubmitBtn.disabled = false;
@@ -379,29 +366,18 @@
 
         let selectedPdfFiles = [];
 
-        // Merge PDF upload area interactions
         mergePdfUploadArea.addEventListener('click', () => pdfFiles.click());
 
         pdfFiles.addEventListener('change', function () {
             handlePdfFiles(Array.from(this.files));
         });
 
-        // Drag and drop functionality for merge
-        mergePdfUploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            mergePdfUploadArea.classList.add('dragover');
-        });
-
-        mergePdfUploadArea.addEventListener('dragleave', () => {
-            mergePdfUploadArea.classList.remove('dragover');
-        });
-
-        mergePdfUploadArea.addEventListener('drop', (e) => {
+        mergePdfUploadArea.addEventListener('dragover', e => { e.preventDefault(); mergePdfUploadArea.classList.add('dragover'); });
+        mergePdfUploadArea.addEventListener('dragleave', () => mergePdfUploadArea.classList.remove('dragover'));
+        mergePdfUploadArea.addEventListener('drop', e => {
             e.preventDefault();
             mergePdfUploadArea.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                handlePdfFiles(Array.from(e.dataTransfer.files));
-            }
+            if (e.dataTransfer.files.length > 0) handlePdfFiles(Array.from(e.dataTransfer.files));
         });
 
         function handlePdfFiles(files) {
@@ -417,11 +393,9 @@
                 return true;
             });
 
-            // Add new files to selected files
             validFiles.forEach(file => {
-                if (!selectedPdfFiles.some(f => f.name === file.name && f.size === file.size)) {
-                    selectedPdfFiles.push(file);
-                }
+                const exists = selectedPdfFiles.some(f => f.name === file.name && f.size === file.size);
+                if (!exists) selectedPdfFiles.push(file);
             });
 
             updatePdfFilesList();
@@ -435,28 +409,27 @@
             }
 
             pdfFilesList.innerHTML = selectedPdfFiles.map((file, index) => `
-                <div class="file-item">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                </path>
-                            </svg>
-                            <span class="text-gray-700 text-sm font-medium">${file.name}</span>
-                            <span class="text-gray-500 text-xs ml-2">(${formatFileSize(file.size)})</span>
-                        </div>
-                        <button type="button" class="text-red-500 hover:text-red-700 remove-file" data-index="${index}">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
+        <div class="file-item">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="text-gray-700 text-sm font-medium">${file.name}</span>
+                    <span class="text-gray-500 text-xs ml-2">(${formatFileSize(file.size)})</span>
                 </div>
-            `).join('');
+                <button type="button" class="text-red-500 hover:text-red-700 remove-file" data-index="${index}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `).join('');
 
-            // Add event listeners to remove buttons
             document.querySelectorAll('.remove-file').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const index = parseInt(e.target.closest('.remove-file').dataset.index);
@@ -471,47 +444,43 @@
             mergeSubmitBtn.disabled = selectedPdfFiles.length < 2;
         }
 
-        mergePDFForm.addEventListener('submit', async (e) => {
+        mergePDFForm.addEventListener('submit', async e => {
             e.preventDefault();
-
-            if (selectedPdfFiles.length < 2) {
-                showError(mergePDFResult, 'অন্তত ২টি PDF ফাইল নির্বাচন করুন');
-                return;
-            }
+            if (selectedPdfFiles.length < 2) { showError(mergePDFResult, 'অন্তত ২টি PDF ফাইল নির্বাচন করুন'); return; }
 
             const formData = new FormData();
-            selectedPdfFiles.forEach((file, index) => {
-                formData.append('pdfs', file);
-            });
+            selectedPdfFiles.forEach(file => formData.append('pdfs', file));
 
             showLoading(mergePDFResult);
             mergeSubmitBtn.disabled = true;
 
             try {
-               const response = await fetch('/api/process-pdf', {
-                    method: 'POST',
-                    body: formData
-                });
-          
-
+                const response = await fetch('/api/process-pdf', { method: 'POST', body: formData });
+                const contentType = response.headers.get('content-type') || '';
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.details || 'PDF মার্জ ব্যর্থ হয়েছে');
+                    if (contentType.includes('application/json')) {
+                        const errData = await response.json();
+                        throw new Error(errData.details || 'Server error');
+                    } else {
+                        const errText = await response.text();
+                        throw new Error(errText || 'Server error');
+                    }
                 }
 
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-
-                showSuccess(
-                    mergePDFResult,
-                    `${selectedPdfFiles.length}টি PDF সফলভাবে মার্জ হয়েছে!`,
-                    url,
-                    'merged.pdf'
-                );
+                if (contentType.includes('application/pdf')) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    showSuccess(mergePDFResult, `${selectedPdfFiles.length}টি PDF সফলভাবে মার্জ হয়েছে!`, url, 'merged.pdf');
+                } else if (contentType.includes('application/json')) {
+                    const data = await response.json();
+                    console.log('JSON response:', data);
+                } else {
+                    const text = await response.text();
+                    throw new Error(text || 'Unknown server response');
+                }
 
             } catch (error) {
-                console.error('PDF Merge Error:', error);
                 showError(mergePDFResult, error.message || 'PDF মার্জ করতে সমস্যা হয়েছে');
             } finally {
                 mergeSubmitBtn.disabled = false;
@@ -522,6 +491,7 @@
         updatePdfFilesList();
         updateMergeSubmitButton();
         processSubmitBtn.disabled = true;
+
     </script>
 </body>
 
