@@ -5,104 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF প্রসেসর | Premium Edition</title>
-    <!-- Tailwind CDN -->
+
+    <!-- External Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..800&display=swap" rel="stylesheet">
-    <!-- Li Ador Noirrit Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..800&display=swap" rel="stylesheet">
+
+    <!-- CSS Styles -->
     <style>
-     
+        /* ======================= */
+        /* 1. BASE STYLES */
+        /* ======================= */
         body {
-  font-family: "Anek Bangla", sans-serif;
+            font-family: "Anek Bangla", sans-serif;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
         }
 
-        .file-upload-area {
-            border: 2px dashed #e5e7eb;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .file-upload-area::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(99, 102, 241, 0.1);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .file-upload-area:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .file-upload-area:hover {
-            border-color: #6366f1;
-            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
-            transform: translateY(-2px);
-        }
-
-        .file-upload-area.dragover {
-            border-color: #4f46e5;
-            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.2);
-        }
-
-        .file-upload-icon {
-            color: #9ca3af;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .file-upload-area:hover .file-upload-icon {
-            color: #6366f1;
-            transform: scale(1.1) translateY(-5px);
-            animation: bounce 0.6s ease-in-out;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            100% {
-                transform: scale(1.1) translateY(-5px);
-            }
-
-            50% {
-                transform: scale(1.1) translateY(-10px);
-            }
-        }
-
-        .loading-spinner {
-            border: 3px solid #e5e7eb;
-            border-top: 3px solid #6366f1;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.4s ease-out;
-        }
-
+        /* ======================= */
+        /* 2. ANIMATIONS */
+        /* ======================= */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -113,10 +35,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        .slide-in-left {
-            animation: slideInLeft 0.5s ease-out;
         }
 
         @keyframes slideInLeft {
@@ -131,10 +49,6 @@
             }
         }
 
-        .slide-in-right {
-            animation: slideInRight 0.5s ease-out;
-        }
-
         @keyframes slideInRight {
             from {
                 opacity: 0;
@@ -145,65 +59,6 @@
                 opacity: 1;
                 transform: translateX(0);
             }
-        }
-
-        .input-field {
-            transition: all 0.2s ease;
-        }
-
-        .input-field:focus {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
-        }
-
-        .input-field:hover {
-            border-color: #a5b4fc;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn-primary:hover:not(:disabled)::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn-primary:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .btn-primary:disabled {
-            background: #d1d5db;
-            cursor: not-allowed;
-        }
-
-        .success-card {
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-            border: 2px solid #86efac;
-            animation: scaleIn 0.4s ease-out;
         }
 
         @keyframes scaleIn {
@@ -218,10 +73,40 @@
             }
         }
 
-        .error-card {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-            border: 2px solid #fca5a5;
-            animation: shake 0.5s ease-in-out;
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes shake {
@@ -247,146 +132,119 @@
             }
         }
 
-        .download-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        /* ======================= */
+        /* 3. UTILITY CLASSES */
+        /* ======================= */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .scale-in {
+            animation: scaleIn 0.4s ease-out;
+        }
+
+        .pulse-slow {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .shake-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* ======================= */
+        /* 4. COMPONENT STYLES */
+        /* ======================= */
+        .file-upload-area {
+            border: 2px dashed #e5e7eb;
+            background: white;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
 
-        .download-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .download-btn:hover::after {
-            width: 300px;
-            height: 300px;
-        }
-
-        .download-btn:hover {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        .file-upload-area:hover {
+            border-color: #6366f1;
+            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #4f46e5;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.2);
+        }
+
+        .loading-spinner {
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .success-card {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #86efac;
+        }
+
+        .error-card {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 2px solid #fca5a5;
+        }
+
+        .gradient-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
         }
 
         .card-shadow {
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
         }
 
-        .label-text {
-            font-weight: 600;
-            color: #374151;
-            font-size: 0.9rem;
+        /* ======================= */
+        /* 5. FORM ELEMENTS */
+        /* ======================= */
+        .input-field {
+            transition: all 0.2s ease;
+            border: 2px solid #e5e7eb;
+            background: white;
         }
 
-        .helper-text {
-            color: #6b7280;
-            font-size: 0.8rem;
+        .input-field:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
         }
 
-        select,
-        textarea {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
+        .input-field:hover:not(:focus) {
+            border-color: #a5b4fc;
         }
 
-        textarea {
-            background-image: none;
-        }
-
-        .file-badge {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border: 1px solid #93c5fd;
-            animation: slideInDown 0.4s ease-out;
-        }
-
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .gradient-header {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .gradient-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Pulse animation for loading */
-        .pulse-slow {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.7;
-            }
-        }
-
-        /* Floating animation for header icon */
-        .float-animation {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        /* Mobile Responsive Adjustments */
+        /* ======================= */
+        /* 6. RESPONSIVE DESIGN */
+        /* ======================= */
         @media (max-width: 640px) {
             .gradient-header {
                 padding: 1.5rem 1rem !important;
@@ -396,104 +254,53 @@
                 font-size: 1.75rem !important;
             }
 
-            .gradient-header p {
-                font-size: 0.8rem !important;
-            }
-
-            .label-text {
-                font-size: 0.85rem;
-            }
-
-            .helper-text {
-                font-size: 0.75rem;
-            }
-
-            .btn-primary {
-                padding: 0.875rem 1rem !important;
-                font-size: 1rem !important;
-            }
-
             .file-upload-area {
                 padding: 2rem 1rem !important;
             }
 
-            .file-upload-icon svg {
-                width: 3rem !important;
-                height: 3rem !important;
-            }
-
             .input-field {
                 padding: 0.875rem !important;
-                font-size: 0.95rem;
-            }
-
-            select,
-            textarea {
-                font-size: 0.95rem;
-            }
-
-            .card-shadow {
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
-            }
-
-            body {
-                padding: 0.5rem !important;
-            }
-
-            .success-card,
-            .error-card {
-                padding: 1rem !important;
-            }
-
-            .download-btn {
-                padding: 0.875rem 1.5rem !important;
-                font-size: 0.95rem !important;
             }
         }
 
-        /* Tablet adjustments */
-        @media (max-width: 768px) and (min-width: 641px) {
-            .gradient-header {
-                padding: 2rem 1.5rem !important;
-            }
-        }
-
-        /* Very small screens */
         @media (max-width: 380px) {
-            .gradient-header h1 {
-                font-size: 1.5rem !important;
-            }
-
             .grid-cols-2 {
                 grid-template-columns: 1fr !important;
             }
-
-            .file-badge .flex {
-                flex-direction: column;
-                align-items: flex-start !important;
-                gap: 0.5rem;
-            }
         }
 
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
+        /* ======================= */
+        /* 7. ACCESSIBILITY */
+        /* ======================= */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
         }
 
-        /* Selection color */
-        ::selection {
+        /* ======================= */
+        /* 8. MISC ENHANCEMENTS */
+        /* ======================= */
+        .selection-highlight::selection {
             background-color: #6366f1;
             color: white;
+        }
+
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
 
-<body
-    class="bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6">
+<body class="min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6 selection-highlight">
     <div class="bg-white rounded-3xl card-shadow w-full max-w-2xl overflow-hidden fade-in">
-
-        <!-- Premium Header -->
-        <div class="gradient-header p-8 text-center relative overflow-hidden">
+        <!-- Header Section -->
+        <header class="gradient-header p-8 text-center relative overflow-hidden">
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-1/2 -translate-y-1/2">
                 </div>
@@ -501,7 +308,8 @@
                 </div>
             </div>
             <div class="relative">
-                <div class="inline-block p-3 bg-white/20 rounded-2xl backdrop-blur-sm mb-3 float-animation">
+                <div class="inline-block p-3 bg-white/20 rounded-2xl backdrop-blur-sm mb-3 float-animation" role="img"
+                    aria-label="PDF Icon">
                     <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
@@ -509,20 +317,24 @@
                     </svg>
                 </div>
                 <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">PDF প্রসেসর</h1>
-                <p class="text-indigo-100 text-sm md:text-base font-medium">অনলাইন ক্লাসের  স্লাইড প্রসেসিং  টুল
+                <p class="text-indigo-100 text-sm md:text-base font-medium">
+                    অনলাইন ক্লাসের স্লাইড প্রসেসিং টুল
                 </p>
             </div>
-        </div>
+        </header>
 
-        <!-- Main Form Container -->
-        <div class="p-6 md:p-8">
-            <form id="pdfForm" class="space-y-6">
-
-                <!-- PDF Upload Area -->
-                <div>
-                    <label class="label-text block mb-3">পিডিএফ ফাইল নির্বাচন করুন</label>
-                    <div class="file-upload-area rounded-2xl p-8 text-center cursor-pointer" id="pdfUploadArea">
-                        <input type="file" name="pdf" id="pdfInput" accept="application/pdf" class="hidden">
+        <!-- Main Content -->
+        <main class="p-6 md:p-8">
+            <form id="pdfForm" class="space-y-6" aria-label="PDF Processing Form">
+                <!-- File Upload Section -->
+                <section aria-labelledby="file-upload-label">
+                    <label id="file-upload-label" class="label-text block mb-3">
+                        পিডিএফ ফাইল নির্বাচন করুন
+                    </label>
+                    <div class="file-upload-area rounded-2xl p-8 text-center cursor-pointer" id="pdfUploadArea"
+                        role="button" tabindex="0" aria-label="Click or drag to upload PDF file">
+                        <input type="file" name="pdf" id="pdfInput" accept=".pdf,application/pdf" class="sr-only"
+                            aria-describedby="file-upload-help">
                         <div class="file-upload-icon mb-4">
                             <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -530,14 +342,20 @@
                                 </path>
                             </svg>
                         </div>
-                        <p class="text-gray-800 font-semibold text-lg mb-2">ক্লিক করে আপলোড করুন</p>
-                        <p class="text-gray-500 text-sm mb-1">অথবা ফাইলটি এখানে ড্র্যাগ করুন</p>
-                        <p class="text-gray-400 text-xs mt-3 inline-block px-4 py-1 bg-gray-100 rounded-full">সর্বোচ্চ
-                            সাইজ: 50MB</p>
+                        <p class="text-gray-800 font-semibold text-lg mb-2">
+                            ক্লিক করে আপলোড করুন
+                        </p>
+                        <p class="text-gray-500 text-sm mb-1">
+                            অথবা ফাইলটি এখানে ড্র্যাগ করুন
+                        </p>
+                        <p id="file-upload-help"
+                            class="text-gray-400 text-xs mt-3 inline-block px-4 py-1 bg-gray-100 rounded-full">
+                            সর্বোচ্চ সাইজ: 50MB
+                        </p>
                     </div>
 
                     <!-- Selected File Display -->
-                    <div id="pdfFileInfo" class="hidden mt-4 file-badge rounded-xl p-4 fade-in">
+                    <div id="pdfFileInfo" class="hidden mt-4 file-badge rounded-xl p-4 fade-in" role="status">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center flex-1 min-w-0">
                                 <div
@@ -555,7 +373,8 @@
                                 </div>
                             </div>
                             <button type="button" id="removePdfFile"
-                                class="ml-3 flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-colors">
+                                class="ml-3 flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                                aria-label="Remove selected file">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12"></path>
@@ -563,36 +382,43 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <!-- Mood Selector -->
-                <div>
-                    <label for="moodSelector" class="label-text block mb-3">মুড সিলেক্ট করুন</label>
-                    <select name="mood" id="moodSelector"
-                        class="input-field w-full border-2 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                        <option value="">একটি মুড নির্বাচন করুন...</option>
+                <!-- Mood Selection -->
+                <section aria-labelledby="mood-selector-label">
+                    <label for="moodSelector" id="mood-selector-label" class="label-text block mb-3">
+                        মুড সিলেক্ট করুন
+                    </label>
+                    <select name="mood" id="moodSelector" class="input-field w-full rounded-xl p-4" required>
+                        <option value="" disabled selected>একটি মুড নির্বাচন করুন...</option>
                         <option value="negative">Negative</option>
                         <option value="math_mahir_slides">Math Mahir Slides</option>
                     </select>
-                    <p class="helper-text mt-2 ml-1">প্রসেসিং এর ধরন নির্বাচন করুন</p>
-                </div>
+                    <p class="helper-text mt-2 ml-1">
+                        প্রসেসিং এর ধরন নির্বাচন করুন
+                    </p>
+                </section>
 
                 <!-- Note Input -->
-                <div>
-                    <label for="noteInput" class="label-text block mb-3">নোট লিখুন</label>
-                    <textarea name="note" id="noteInput" rows="4"
-                        class="input-field w-full border-2 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none bg-white"
-                        placeholder="আপনার নোট এখানে লিখুন... (ঐচ্ছিক)"></textarea>
-                    <p class="helper-text mt-2 ml-1">অতিরিক্ত তথ্য বা নির্দেশনা যোগ করুন</p>
-                </div>
+                <section aria-labelledby="note-input-label">
+                    <label for="noteInput" id="note-input-label" class="label-text block mb-3">
+                        নোট লিখুন
+                    </label>
+                    <textarea name="note" id="noteInput" rows="4" class="input-field w-full rounded-xl p-4 resize-none"
+                        placeholder="আপনার নোট এখানে লিখুন... (ঐচ্ছিক)" aria-describedby="note-help"></textarea>
+                    <p id="note-help" class="helper-text mt-2 ml-1">
+                        অতিরিক্ত তথ্য বা নির্দেশনা যোগ করুন
+                    </p>
+                </section>
 
-                <!-- Row and Column Selectors -->
+                <!-- Layout Selection -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="slide-in-left">
-                        <label for="rowSelector" class="label-text block mb-3">সারি নির্বাচন করুন</label>
-                        <select name="row" id="rowSelector"
-                            class="input-field w-full border-2 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                            <option value="">সারি...</option>
+                    <section class="slide-in-left" aria-labelledby="row-selector-label">
+                        <label for="rowSelector" id="row-selector-label" class="label-text block mb-3">
+                            সারি নির্বাচন করুন
+                        </label>
+                        <select name="row" id="rowSelector" class="input-field w-full rounded-xl p-4" required>
+                            <option value="" disabled selected>সারি...</option>
                             <option value="1">১</option>
                             <option value="2">২</option>
                             <option value="3">৩</option>
@@ -614,12 +440,14 @@
                             <option value="19">১৯</option>
                             <option value="20">২০</option>
                         </select>
-                    </div>
-                    <div class="slide-in-right">
-                        <label for="columnSelector" class="label-text block mb-3">কলাম নির্বাচন করুন</label>
-                        <select name="column" id="columnSelector"
-                            class="input-field w-full border-2 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                            <option value="">কলাম...</option>
+                    </section>
+
+                    <section class="slide-in-right" aria-labelledby="column-selector-label">
+                        <label for="columnSelector" id="column-selector-label" class="label-text block mb-3">
+                            কলাম নির্বাচন করুন
+                        </label>
+                        <select name="column" id="columnSelector" class="input-field w-full rounded-xl p-4" required>
+                            <option value="" disabled selected>কলাম...</option>
                             <option value="1">১</option>
                             <option value="2">২</option>
                             <option value="3">৩</option>
@@ -631,13 +459,13 @@
                             <option value="9">৯</option>
                             <option value="10">১০</option>
                         </select>
-                    </div>
+                    </section>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit" id="processSubmitBtn"
-                    class="btn-primary w-full text-white font-bold py-4 px-6 rounded-xl text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled>
+                    class="btn-primary w-full text-white font-bold py-4 px-6 rounded-xl text-lg disabled:opacity-50 disabled:cursor-not-allowed smooth-transition"
+                    disabled aria-label="Start PDF processing">
                     <span class="flex items-center justify-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -648,12 +476,12 @@
                 </button>
             </form>
 
-            <!-- Result Area -->
-            <div id="pdfResult" class="mt-6"></div>
-        </div>
+            <!-- Result Display Area -->
+            <div id="pdfResult" class="mt-6" role="region" aria-live="polite"></div>
+        </main>
 
-        <!-- Premium Footer -->
-        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-5 border-t border-gray-200">
+        <!-- Footer -->
+        <footer class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-5 border-t border-gray-200">
             <div class="flex items-center justify-center space-x-2">
                 <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
@@ -662,217 +490,436 @@
                 </svg>
                 <p class="text-gray-700 text-sm font-semibold">Made by Shatadhru</p>
                 <span class="text-gray-400">•</span>
-<a href="https://forms.gle/BDn7n7hX8V2vLNut5" target="_blank" class="text-indigo-600 cursor-pointer text-sm font-bold">
-    Report A Problem By Google Form Click Here
-</a>
+                <a href="https://forms.gle/BDn7n7hX8V2vLNut5" target="_blank" rel="noopener noreferrer"
+                    class="text-indigo-600 hover:text-indigo-800 text-sm font-bold transition-colors">
+                    Report A Problem By Google Form Click Here
+                </a>
             </div>
-        </div>
+        </footer>
     </div>
 
+    <!-- JavaScript Application -->
     <script>
-        // ===== Utility Functions =====
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        function showLoading(element) {
-            element.innerHTML = `
-                <div class="flex flex-col items-center justify-center p-8 fade-in">
-                    <div class="loading-spinner mb-4"></div>
-                    <p class="text-gray-800 font-bold text-lg pulse-slow">প্রসেস হচ্ছে...</p>
-                    <p class="text-gray-500 text-sm mt-2">অনুগ্রহ করে অপেক্ষা করুন, এটি কিছু সময় নিতে পারে</p>
-                </div>
-            `;
-        }
-
-        function showSuccess(element, message, downloadUrl, fileName) {
-            element.innerHTML = `
-                <div class="success-card rounded-2xl p-6 fade-in">
-                    <div class="flex items-start mb-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-4 flex-1">
-                            <h3 class="text-green-900 font-bold text-lg mb-1">সফলভাবে সম্পন্ন হয়েছে!</h3>
-                            <p class="text-green-700 text-sm">${message}</p>
-                        </div>
-                    </div>
-                    <a href="${downloadUrl}" download="${fileName}" 
-                        class="download-btn w-full text-white font-bold py-3.5 px-6 rounded-xl inline-flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
-                        ডাউনলোড করুন
-                    </a>
-                </div>
-            `;
-        }
-
-        function showError(element, message) {
-            element.innerHTML = `
-                <div class="error-card rounded-2xl p-6 fade-in">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" 
-                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-4 flex-1">
-                            <h3 class="text-red-900 font-bold text-lg mb-1">ত্রুটি ঘটেছে</h3>
-                            <p class="text-red-700 text-sm">${message}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ===== DOM Elements =====
-        const pdfInput = document.getElementById('pdfInput');
-        const pdfUploadArea = document.getElementById('pdfUploadArea');
-        const pdfFileInfo = document.getElementById('pdfFileInfo');
-        const pdfFileName = document.getElementById('pdfFileName');
-        const pdfFileSize = document.getElementById('pdfFileSize');
-        const removePdfFile = document.getElementById('removePdfFile');
-        const moodSelector = document.getElementById('moodSelector');
-        const noteInput = document.getElementById('noteInput');
-        const rowSelector = document.getElementById('rowSelector');
-        const columnSelector = document.getElementById('columnSelector');
-        const pdfForm = document.getElementById('pdfForm');
-        const pdfResult = document.getElementById('pdfResult');
-        const processSubmitBtn = document.getElementById('processSubmitBtn');
-
-        // ===== File Upload Interactions =====
-        pdfUploadArea.addEventListener('click', () => pdfInput.click());
-
-        pdfInput.addEventListener('change', function () {
-            if (this.files[0]) handlePdfFile(this.files[0]);
-        });
-
-        pdfUploadArea.addEventListener('dragover', e => {
-            e.preventDefault();
-            pdfUploadArea.classList.add('dragover');
-        });
-
-        pdfUploadArea.addEventListener('dragleave', () => {
-            pdfUploadArea.classList.remove('dragover');
-        });
-
-        pdfUploadArea.addEventListener('drop', e => {
-            e.preventDefault();
-            pdfUploadArea.classList.remove('dragover');
-            if (e.dataTransfer.files[0]) {
-                pdfInput.files = e.dataTransfer.files;
-                handlePdfFile(e.dataTransfer.files[0]);
+        // =======================
+        // 1. APPLICATION CONSTANTS
+        // =======================
+        const APP_CONFIG = {
+            MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB in bytes
+            VALID_FILE_TYPES: ['application/pdf'],
+            API_ENDPOINT: '/api/process-pdf',
+            SUCCESS_MESSAGES: {
+                PDF_PROCESSED: 'আপনার PDF সফলভাবে প্রসেস হয়েছে'
+            },
+            ERROR_MESSAGES: {
+                NO_FILE: 'PDF ফাইল নির্বাচন করুন',
+                INVALID_FILE_TYPE: 'শুধুমাত্র PDF ফাইল নির্বাচন করুন',
+                FILE_TOO_LARGE: 'ফাইল সাইজ 50MB এর বেশি হতে পারবে না',
+                PROCESS_FAILED: 'PDF প্রসেস করতে সমস্যা হয়েছে',
+                NETWORK_ERROR: 'নেটওয়ার্ক ত্রুটি, আবার চেষ্টা করুন',
+                SERVER_ERROR: 'সার্ভার থেকে প্রতিক্রিয়া পেতে সমস্যা'
             }
-        });
+        };
 
-        removePdfFile.addEventListener('click', e => {
-            e.stopPropagation();
-            pdfInput.value = '';
-            pdfFileInfo.classList.add('hidden');
-            validateForm();
-        });
+        // =======================
+        // 2. DOM ELEMENT REFERENCES
+        // =======================
+        const elements = {
+            pdfInput: document.getElementById('pdfInput'),
+            pdfUploadArea: document.getElementById('pdfUploadArea'),
+            pdfFileInfo: document.getElementById('pdfFileInfo'),
+            pdfFileName: document.getElementById('pdfFileName'),
+            pdfFileSize: document.getElementById('pdfFileSize'),
+            removePdfFile: document.getElementById('removePdfFile'),
+            moodSelector: document.getElementById('moodSelector'),
+            noteInput: document.getElementById('noteInput'),
+            rowSelector: document.getElementById('rowSelector'),
+            columnSelector: document.getElementById('columnSelector'),
+            pdfForm: document.getElementById('pdfForm'),
+            pdfResult: document.getElementById('pdfResult'),
+            processSubmitBtn: document.getElementById('processSubmitBtn')
+        };
 
-        function handlePdfFile(file) {
-            if (file.type !== 'application/pdf') {
-                showError(pdfResult, 'শুধুমাত্র PDF ফাইল নির্বাচন করুন');
-                return;
-            }
-            if (file.size > 50 * 1024 * 1024) {
-                showError(pdfResult, 'ফাইল সাইজ 50MB এর বেশি হতে পারবে না');
-                return;
-            }
-            pdfFileName.textContent = file.name;
-            pdfFileSize.textContent = formatFileSize(file.size);
-            pdfFileInfo.classList.remove('hidden');
-            pdfResult.innerHTML = '';
-            validateForm();
-        }
+        // =======================
+        // 3. UTILITY FUNCTIONS
+        // =======================
+        class FileUtils {
+            /**
+             * Format bytes to human-readable string
+             * @param {number} bytes - File size in bytes
+             * @returns {string} Formatted file size
+             */
+            static formatSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
 
-        // ===== Form Validation =====
-        function validateForm() {
-            const hasFile = pdfInput.files.length > 0;
-            const hasMood = moodSelector.value !== '';
-            const hasRow = rowSelector.value !== '';
-            const hasColumn = columnSelector.value !== '';
+                const units = ['Bytes', 'KB', 'MB', 'GB'];
+                const base = 1024;
+                const exponent = Math.floor(Math.log(bytes) / Math.log(base));
 
-            processSubmitBtn.disabled = !(hasFile && hasMood && hasRow && hasColumn);
-        }
-
-        // Add event listeners to all required fields
-        moodSelector.addEventListener('change', validateForm);
-        rowSelector.addEventListener('change', validateForm);
-        columnSelector.addEventListener('change', validateForm);
-
-        // ===== Form Submission =====
-        pdfForm.addEventListener('submit', async e => {
-            e.preventDefault();
-
-            if (!pdfInput.files[0]) {
-                showError(pdfResult, 'PDF ফাইল নির্বাচন করুন');
-                return;
+                return `${(bytes / Math.pow(base, exponent)).toFixed(2)} ${units[exponent]}`;
             }
 
-            const formData = new FormData();
-            formData.append('pdf', pdfInput.files[0]);
-            formData.append('mode', moodSelector.value);
-            formData.append('mood', moodSelector.value);
-            formData.append('note', noteInput.value);
-            formData.append('row', rowSelector.value);
-            formData.append('column', columnSelector.value);
+            /**
+             * Validate file against application constraints
+             * @param {File} file - File to validate
+             * @returns {object} Validation result
+             */
+            static validateFile(file) {
+                const errors = [];
 
-            
-
-            showLoading(pdfResult);
-            processSubmitBtn.disabled = true;
-
-            try {
-                const response = await fetch(`${window.location.origin}/api/process-pdf`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const contentType = response.headers.get('content-type') || '';
-
-                if (!response.ok) {
-                    if (contentType.includes('application/json')) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.details || 'প্রসেস ব্যর্থ হয়েছে');
-                    } else {
-                        const errorText = await response.text();
-                        throw new Error(errorText || 'প্রসেস ব্যর্থ হয়েছে');
-                    }
+                // Check file type
+                if (!APP_CONFIG.VALID_FILE_TYPES.includes(file.type)) {
+                    errors.push(APP_CONFIG.ERROR_MESSAGES.INVALID_FILE_TYPE);
                 }
 
-                if (contentType.includes('application/pdf')) {
-                    const blob = await response.blob();
-                    const url = URL.createObjectURL(blob);
-                    const modeName = moodSelector.options[moodSelector.selectedIndex].text;
-                    showSuccess(pdfResult, `আপনার PDF ${modeName} মোডে সফলভাবে প্রসেস হয়েছে`, url, `processed_${moodSelector.value}.pdf`);
-                } else if (contentType.includes('application/json')) {
-                    const data = await response.json();
-                    console.log('Server returned JSON:', data);
+                // Check file size
+                if (file.size > APP_CONFIG.MAX_FILE_SIZE) {
+                    errors.push(APP_CONFIG.ERROR_MESSAGES.FILE_TOO_LARGE);
+                }
+
+                return {
+                    isValid: errors.length === 0,
+                    errors: errors
+                };
+            }
+        }
+
+        // =======================
+        // 4. UI COMPONENT FUNCTIONS
+        // =======================
+        class UIComponents {
+            /**
+             * Show loading state
+             * @param {HTMLElement} container - Container to show loading in
+             */
+            static showLoading(container) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center p-8 fade-in" role="status" aria-live="polite">
+                        <div class="loading-spinner w-12 h-12 mb-4"></div>
+                        <p class="text-gray-800 font-bold text-lg pulse-slow">প্রসেস হচ্ছে...</p>
+                        <p class="text-gray-500 text-sm mt-2 text-center">
+                            অনুগ্রহ করে অপেক্ষা করুন, এটি কিছু সময় নিতে পারে
+                        </p>
+                    </div>
+                `;
+            }
+
+            /**
+             * Show success state
+             * @param {HTMLElement} container - Container to show success in
+             * @param {string} message - Success message
+             * @param {string} downloadUrl - Download URL
+             * @param {string} fileName - File name for download
+             */
+            static showSuccess(container, message, downloadUrl, fileName) {
+                container.innerHTML = `
+                    <div class="success-card rounded-2xl p-6 fade-in" role="alert">
+                        <div class="flex items-start mb-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" 
+                                          d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <h3 class="text-green-900 font-bold text-lg mb-1">সফলভাবে সম্পন্ন হয়েছে!</h3>
+                                <p class="text-green-700 text-sm">${message}</p>
+                            </div>
+                        </div>
+                        <a href="${downloadUrl}" 
+                           download="${fileName}" 
+                           class="download-btn w-full text-green border border-green-500 font-bold py-3.5 px-6 rounded-xl inline-flex items-center justify-center smooth-transition">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            ডাউনলোড করুন
+                        </a>
+                    </div>
+                `;
+            }
+
+            /**
+             * Show error state
+             * @param {HTMLElement} container - Container to show error in
+             * @param {string} message - Error message
+             */
+            static showError(container, message) {
+                container.innerHTML = `
+                    <div class="error-card rounded-2xl p-6 fade-in shake-animation" role="alert">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" 
+                                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <h3 class="text-red-900 font-bold text-lg mb-1">ত্রুটি ঘটেছে</h3>
+                                <p class="text-red-700 text-sm">${message}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            /**
+             * Update file info display
+             * @param {File} file - Selected file
+             */
+            static updateFileInfo(file) {
+                elements.pdfFileName.textContent = file.name;
+                elements.pdfFileSize.textContent = FileUtils.formatSize(file.size);
+                elements.pdfFileInfo.classList.remove('hidden');
+            }
+
+            /**
+             * Clear file info display
+             */
+            static clearFileInfo() {
+                elements.pdfFileInfo.classList.add('hidden');
+                elements.pdfFileName.textContent = '';
+                elements.pdfFileSize.textContent = '';
+            }
+        }
+
+        // =======================
+        // 5. VALIDATION FUNCTIONS
+        // =======================
+        class FormValidator {
+            /**
+             * Validate entire form
+             * @returns {boolean} Whether form is valid
+             */
+            static validateForm() {
+                const hasFile = elements.pdfInput.files.length > 0;
+                const hasMood = elements.moodSelector.value !== '';
+                const hasRow = elements.rowSelector.value !== '';
+                const hasColumn = elements.columnSelector.value !== '';
+
+                return hasFile && hasMood && hasRow && hasColumn;
+            }
+
+            /**
+             * Update submit button state based on validation
+             */
+            static updateSubmitButton() {
+                const isValid = this.validateForm();
+                elements.processSubmitBtn.disabled = !isValid;
+            }
+        }
+
+        // =======================
+        // 6. EVENT HANDLERS
+        // =======================
+        class EventHandlers {
+            /**
+             * Handle file selection
+             * @param {Event} event - File input change event
+             */
+            static handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const validation = FileUtils.validateFile(file);
+
+                if (validation.isValid) {
+                    UIComponents.updateFileInfo(file);
+                    elements.pdfResult.innerHTML = '';
+                    EventHandlers.showSuccessMessage('ফাইল সফলভাবে নির্বাচিত হয়েছে');
                 } else {
-                    const text = await response.text();
-                    throw new Error(text || 'Unknown server response');
+                    UIComponents.showError(elements.pdfResult, validation.errors[0]);
+                    elements.pdfInput.value = '';
+                    UIComponents.clearFileInfo();
                 }
-            } catch (error) {
-                showError(pdfResult, error.message || 'PDF প্রসেস করতে সমস্যা হয়েছে');
-            } finally {
-                validateForm();
+
+                FormValidator.updateSubmitButton();
             }
+
+            /**
+             * Handle drag and drop events
+             * @param {DragEvent} event - Drag event
+             */
+            static handleDragOver(event) {
+                event.preventDefault();
+                elements.pdfUploadArea.classList.add('dragover');
+            }
+
+            /**
+             * Handle drag leave event
+             */
+            static handleDragLeave() {
+                elements.pdfUploadArea.classList.remove('dragover');
+            }
+
+            /**
+             * Handle drop event
+             * @param {DragEvent} event - Drop event
+             */
+            static handleDrop(event) {
+                event.preventDefault();
+                elements.pdfUploadArea.classList.remove('dragover');
+
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    elements.pdfInput.files = files;
+                    EventHandlers.handleFileSelect({ target: elements.pdfInput });
+                }
+            }
+
+            /**
+             * Handle form submission
+             * @param {Event} event - Form submit event
+             */
+            static async handleFormSubmit(event) {
+                event.preventDefault();
+
+                if (!elements.pdfInput.files[0]) {
+                    UIComponents.showError(elements.pdfResult, APP_CONFIG.ERROR_MESSAGES.NO_FILE);
+                    return;
+                }
+
+                // Create form data
+                const formData = new FormData();
+                formData.append('pdf', elements.pdfInput.files[0]);
+                formData.append('row', elements.rowSelector.value);
+                formData.append('column', elements.columnSelector.value);
+
+                // Show loading state
+                UIComponents.showLoading(elements.pdfResult);
+                elements.processSubmitBtn.disabled = true;
+
+                try {
+                    // Send request to server
+                    const response = await fetch(APP_CONFIG.API_ENDPOINT, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    // Handle response
+                    if (!response.ok) {
+                        throw new Error(APP_CONFIG.ERROR_MESSAGES.PROCESS_FAILED);
+                    }
+
+                    // Check content type
+                    const contentType = response.headers.get('content-type');
+
+                    if (contentType && contentType.includes('application/pdf')) {
+                        // Handle PDF response
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+                        const moodText = elements.moodSelector.options[elements.moodSelector.selectedIndex].text;
+
+                        UIComponents.showSuccess(
+                            elements.pdfResult,
+                            `${APP_CONFIG.SUCCESS_MESSAGES.PDF_PROCESSED} (${moodText})`,
+                            url,
+                            `processed_${Date.now()}.pdf`
+                        );
+                    } else {
+                        // Handle other responses
+                        const text = await response.text();
+                        console.warn('Unexpected response:', text);
+                        throw new Error(APP_CONFIG.ERROR_MESSAGES.SERVER_ERROR);
+                    }
+                } catch (error) {
+                    console.error('Processing error:', error);
+                    UIComponents.showError(
+                        elements.pdfResult,
+                        error.message || APP_CONFIG.ERROR_MESSAGES.NETWORK_ERROR
+                    );
+                } finally {
+                    FormValidator.updateSubmitButton();
+                }
+            }
+
+            /**
+             * Handle file removal
+             */
+            static handleFileRemove() {
+                elements.pdfInput.value = '';
+                UIComponents.clearFileInfo();
+                FormValidator.updateSubmitButton();
+            }
+
+            /**
+             * Show temporary success message
+             * @param {string} message - Message to show
+             */
+            static showSuccessMessage(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg fade-in';
+                successDiv.textContent = message;
+                successDiv.setAttribute('role', 'alert');
+                document.body.appendChild(successDiv);
+
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    successDiv.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                    setTimeout(() => successDiv.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        // =======================
+        // 7. INITIALIZATION
+        // =======================
+        class PDFProcessorApp {
+            /**
+             * Initialize the application
+             */
+            static init() {
+                this.setupEventListeners();
+                FormValidator.updateSubmitButton();
+            }
+
+            /**
+             * Set up all event listeners
+             */
+            static setupEventListeners() {
+                // File upload interactions
+                elements.pdfUploadArea.addEventListener('click', () => elements.pdfInput.click());
+                elements.pdfInput.addEventListener('change', EventHandlers.handleFileSelect);
+
+                // Drag and drop
+                elements.pdfUploadArea.addEventListener('dragover', EventHandlers.handleDragOver);
+                elements.pdfUploadArea.addEventListener('dragleave', EventHandlers.handleDragLeave);
+                elements.pdfUploadArea.addEventListener('drop', EventHandlers.handleDrop);
+
+                // File removal
+                elements.removePdfFile.addEventListener('click', EventHandlers.handleFileRemove);
+
+                // Form validation on field changes
+                elements.moodSelector.addEventListener('change', () => FormValidator.updateSubmitButton());
+                elements.rowSelector.addEventListener('change', () => FormValidator.updateSubmitButton());
+                elements.columnSelector.addEventListener('change', () => FormValidator.updateSubmitButton());
+
+                // Form submission
+                elements.pdfForm.addEventListener('submit', EventHandlers.handleFormSubmit);
+
+                // Keyboard accessibility for upload area
+                elements.pdfUploadArea.addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        elements.pdfInput.click();
+                    }
+                });
+            }
+        }
+
+        // =======================
+        // 8. START APPLICATION
+        // =======================
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            PDFProcessorApp.init();
         });
 
-        // ===== Initialize =====
-        validateForm();
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                FormValidator.updateSubmitButton();
+            }
+        });
     </script>
 </body>
 
